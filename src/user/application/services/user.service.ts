@@ -30,6 +30,7 @@ export class UserService {
       );
     } catch (error) {
       this.logger.error(`Failed to create user: ${error}`);
+      this.logger.error({ dto });
       throw new CreateUserError();
     }
   }
