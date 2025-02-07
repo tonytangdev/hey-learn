@@ -8,7 +8,7 @@ describe('User entity', () => {
     const email = new Email(faker.internet.email());
     const user = new User(email);
 
-    expect(user.email).toBeInstanceOf(Email);
+    expect(user.getEmail()).toBe(email.value);
     expect(user.id).toMatch(
       /^user_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
     );
@@ -26,7 +26,7 @@ describe('User entity', () => {
 
     const user = new User(email, id, createdAt, updatedAt, deletedAt);
     expect(user.id).toEqual(id);
-    expect(user.email).toEqual(email);
+    expect(user.getEmail()).toEqual(email.value);
     expect(user.createdAt).toEqual(createdAt);
     expect(user.updatedAt).toEqual(updatedAt);
     expect(user.deletedAt).toEqual(deletedAt);

@@ -5,10 +5,14 @@ const ID_PREFIX = 'user_';
 
 export class User {
   constructor(
-    public email: Email,
-    public id: string = ID_PREFIX + randomUUID(),
-    public createdAt: Date = new Date(),
-    public updatedAt: Date = new Date(),
-    public deletedAt?: Date,
+    private readonly email: Email,
+    public readonly id: string = ID_PREFIX + randomUUID(),
+    public readonly createdAt: Date = new Date(),
+    public readonly updatedAt: Date = new Date(),
+    public readonly deletedAt?: Date,
   ) {}
+
+  getEmail(): string {
+    return this.email.value;
+  }
 }
