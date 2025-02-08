@@ -49,4 +49,13 @@ describe('OrganizationEntity', () => {
       expect(organization.deletedAt).toBeInstanceOf(Date);
     },
   );
+
+  it('should set the createdBy', () => {
+    const organizationType = new OrganizationType(ORGANIZATION_TYPES.SINGLE);
+    const email = new Email(faker.internet.email());
+    const user = new User(email);
+    const organization = new Organization(organizationType);
+    organization.setCreatedBy(user);
+    expect(organization.getCreatedBy()).toEqual(user);
+  });
 });
