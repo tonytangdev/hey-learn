@@ -9,4 +9,9 @@ export class UserInMemoryRepository implements UserRepository {
 
     return Promise.resolve(user);
   }
+
+  findByEmail(email: string): Promise<User | null> {
+    const user = this.users.find((user) => user.getEmail() === email);
+    return Promise.resolve(user || null);
+  }
 }

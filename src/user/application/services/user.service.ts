@@ -12,6 +12,7 @@ import {
   EVENT_EMITTER,
   EventEmitter,
 } from '../../../shared/interfaces/event-emitter';
+import { UserAlreadyExists } from '../errors/user-already-exists.error';
 
 @Injectable()
 export class UserService {
@@ -25,9 +26,15 @@ export class UserService {
   ) {}
 
   async createUser(dto: CreateUserDTO): Promise<void> {
+    const email = new Email(dto.email);
+    const user = new User(email);
+
+    const existingUser = await this.userRepository.findByEmail(email.value);
+    if (existingUser) {
+      throw new UserAlreadyExists(email.value);
+    }
+
     try {
-      const email = new Email(dto.email);
-      const user = new User(email);
       const createdUser = await this.userRepository.createUser(user);
       await this.eventEmitter.emit(
         USER_CREATED_EVENT,

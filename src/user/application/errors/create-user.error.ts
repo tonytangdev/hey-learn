@@ -1,6 +1,6 @@
 export class CreateUserError extends Error {
   constructor() {
     super();
-    this.name = 'CreateUserError';
+    this.name = CreateUserError.name;
   }
 }

@@ -11,23 +11,37 @@ import {
 } from '../events/user-created.event';
 import { Email } from '../../domain/value-objects/email.value-object';
 import { randomUUID } from 'node:crypto';
-import { EventEmitter } from 'src/shared/interfaces/event-emitter';
+import {
+  EVENT_EMITTER,
+  EventEmitter,
+} from '../../../shared/interfaces/event-emitter';
+import { UserAlreadyExists } from '../errors/user-already-exists.error';
+import { Test } from '@nestjs/testing';
+import { EventEmitterDefault } from '../../../user/infrastructure/event-emitters/event-emitter.default';
 
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: UserRepository;
   let eventEmitter: EventEmitter;
 
-  beforeEach(() => {
-    userRepository = {
-      createUser: jest.fn(),
-    };
-    eventEmitter = {
-      emit: jest.fn(),
-    };
-    eventEmitter.emit = jest.fn();
-    userService = new UserService(userRepository, eventEmitter);
-    jest.clearAllMocks();
+  beforeEach(async () => {
+    const moduleRef = await Test.createTestingModule({
+      providers: [
+        UserService,
+        {
+          provide: UserRepository,
+          useValue: {
+            createUser: jest.fn(),
+            findByEmail: jest.fn(),
+          },
+        },
+        { provide: EVENT_EMITTER, useValue: { emit: jest.fn() } },
+      ],
+    }).compile();
+
+    userService = moduleRef.get<UserService>(UserService);
+    userRepository = moduleRef.get<UserRepository>(UserRepository);
+    eventEmitter = moduleRef.get<EventEmitter>(EVENT_EMITTER);
   });
 
   it('should create a user', async () => {
@@ -53,6 +67,17 @@ describe('UserService', () => {
     (userRepository.createUser as jest.Mock).mockRejectedValueOnce(new Error());
     await expect(userService.createUser(newUser)).rejects.toThrow(
       new CreateUserError(),
+    );
+  });
+
+  it('should throw an error if user already exists', async () => {
+    const newUser = new CreateUserDTO();
+    newUser.email = faker.internet.email();
+    (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(
+      new User(new Email(newUser.email)),
+    );
+    await expect(userService.createUser(newUser)).rejects.toThrow(
+      new UserAlreadyExists(newUser.email),
     );
   });
 });
