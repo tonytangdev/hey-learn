@@ -17,7 +17,6 @@ import {
 } from '../../../shared/interfaces/event-emitter';
 import { UserAlreadyExists } from '../errors/user-already-exists.error';
 import { Test } from '@nestjs/testing';
-import { EventEmitterDefault } from '../../../user/infrastructure/event-emitters/event-emitter.default';
 
 describe('UserService', () => {
   let userService: UserService;
