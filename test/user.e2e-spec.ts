@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { faker } from '@faker-js/faker';
@@ -17,7 +17,7 @@ describe('UserController (e2e)', () => {
     return request(app.getHttpServer())
       .post('/users')
       .send(payload)
-      .expect(201);
+      .expect(HttpStatus.CREATED);
   });
 
   it('/users (POST) - should return a bad request error if the email is invalid', () => {
@@ -25,6 +25,18 @@ describe('UserController (e2e)', () => {
     return request(app.getHttpServer())
       .post('/users')
       .send(payload)
-      .expect(400);
+      .expect(HttpStatus.BAD_REQUEST);
+  });
+
+  it('/users (POST) - should return a conflict error if the email is already taken', async () => {
+    const payload = { email: faker.internet.email() };
+    await request(app.getHttpServer())
+      .post('/users')
+      .send(payload)
+      .expect(HttpStatus.CREATED);
+    return request(app.getHttpServer())
+      .post('/users')
+      .send(payload)
+      .expect(HttpStatus.CONFLICT);
   });
 });
