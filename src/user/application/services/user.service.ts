@@ -2,13 +2,16 @@ import { Email } from '../../domain/value-objects/email.value-object';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UserRepository } from '../repositories/user.repository';
 import { User } from '../../domain/entities/user.entity';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateUserError } from '../errors/create-user.error';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   USER_CREATED_EVENT,
   UserCreatedEvent,
 } from '../events/user-created.event';
+import {
+  EVENT_EMITTER,
+  EventEmitter,
+} from '../../../shared/interfaces/event-emitter';
 
 @Injectable()
 export class UserService {
@@ -16,7 +19,9 @@ export class UserService {
 
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly eventEmitter: EventEmitter2,
+
+    @Inject(EVENT_EMITTER)
+    private readonly eventEmitter: EventEmitter,
   ) {}
 
   async createUser(dto: CreateUserDTO): Promise<void> {
@@ -24,7 +29,7 @@ export class UserService {
       const email = new Email(dto.email);
       const user = new User(email);
       const createdUser = await this.userRepository.createUser(user);
-      this.eventEmitter.emit(
+      await this.eventEmitter.emit(
         USER_CREATED_EVENT,
         new UserCreatedEvent(createdUser.id, createdUser.getEmail()),
       );

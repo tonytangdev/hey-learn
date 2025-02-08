@@ -5,24 +5,26 @@ import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UserRepository } from '../repositories/user.repository';
 import { UserService } from './user.service';
 import { CreateUserError } from '../errors/create-user.error';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
   USER_CREATED_EVENT,
   UserCreatedEvent,
 } from '../events/user-created.event';
 import { Email } from '../../domain/value-objects/email.value-object';
 import { randomUUID } from 'node:crypto';
+import { EventEmitter } from 'src/shared/interfaces/event-emitter';
 
 describe('UserService', () => {
   let userService: UserService;
   let userRepository: UserRepository;
-  let eventEmitter: EventEmitter2;
+  let eventEmitter: EventEmitter;
 
   beforeEach(() => {
     userRepository = {
       createUser: jest.fn(),
     };
-    eventEmitter = new EventEmitter2();
+    eventEmitter = {
+      emit: jest.fn(),
+    };
     eventEmitter.emit = jest.fn();
     userService = new UserService(userRepository, eventEmitter);
     jest.clearAllMocks();
