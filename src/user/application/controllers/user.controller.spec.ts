@@ -73,5 +73,24 @@ describe('User Controller', () => {
         message: `User with email ${createUserDTO.email} already exists`,
       });
     });
+
+    it('should throw an error when userService throws an error', async () => {
+      res = {
+        send: jest.fn().mockReturnThis(),
+        status: jest.fn().mockReturnThis(),
+      } as unknown as Response;
+      const createUserDTO = new CreateUserDTO();
+      createUserDTO.email = faker.internet.email();
+
+      const handleSpy = jest
+        .spyOn(createUserCommandHandler, 'handle')
+        .mockRejectedValueOnce(new Error());
+      await userController.createUser(createUserDTO, res);
+      expect(handleSpy).toHaveBeenCalledWith(createUserDTO);
+      expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(res.send).toHaveBeenCalledWith({
+        message: 'Internal Server Error',
+      });
+    });
   });
 });
