@@ -27,21 +27,22 @@ export class UserService {
       throw new UserAlreadyExists(dto.email);
     }
 
-    const email = new Email(dto.email);
-    const userAggregate = UserAggregate.createUser(email);
+    const userAggregate = UserAggregate.createUser(dto.email);
 
     try {
       await this.userRepository.createUser(userAggregate.getUser());
-
-      await Promise.all(
-        userAggregate
-          .getDomainEvents()
-          .map((event) => this.eventEmitter.emit(event.name, event.data)),
-      );
     } catch (error) {
       this.logger.error(`Failed to create user: ${error}`);
       this.logger.error({ dto });
       throw new CreateUserError();
     }
+
+    await Promise.all(
+      userAggregate
+        .getDomainEvents()
+        .map(
+          async (event) => await this.eventEmitter.emit(event.name, event.data),
+        ),
+    );
   }
 }

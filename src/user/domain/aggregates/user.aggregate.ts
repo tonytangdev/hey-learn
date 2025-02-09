@@ -11,7 +11,8 @@ export class UserAggregate {
 
   constructor(public readonly user: User) {}
 
-  static createUser(email: Email) {
+  static createUser(emailAddress: string) {
+    const email = new Email(emailAddress);
     const user = new User(email);
     const userAggregate = new UserAggregate(user);
     userAggregate.domainEvents.push({
