@@ -6,3 +6,8 @@ export class UserCreatedEvent {
     public readonly userEmail: string,
   ) {}
 }
+
+export type USER_CREATED_DOMAIN_EVENT = {
+  name: typeof USER_CREATED_EVENT;
+  data: UserCreatedEvent;
+};

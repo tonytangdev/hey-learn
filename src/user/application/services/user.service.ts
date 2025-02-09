@@ -1,18 +1,14 @@
 import { Email } from '../../domain/value-objects/email.value-object';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UserRepository } from '../repositories/user.repository';
-import { User } from '../../domain/entities/user.entity';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateUserError } from '../errors/create-user.error';
-import {
-  USER_CREATED_EVENT,
-  UserCreatedEvent,
-} from '../events/user-created.event';
 import {
   EVENT_EMITTER,
   EventEmitter,
 } from '../../../shared/interfaces/event-emitter';
 import { UserAlreadyExists } from '../errors/user-already-exists.error';
+import { UserAggregate } from '../../../user/domain/aggregates/user.aggregate';
 
 @Injectable()
 export class UserService {
@@ -26,19 +22,21 @@ export class UserService {
   ) {}
 
   async createUser(dto: CreateUserDTO): Promise<void> {
-    const email = new Email(dto.email);
-    const user = new User(email);
-
-    const existingUser = await this.userRepository.findByEmail(email.value);
+    const existingUser = await this.userRepository.findByEmail(dto.email);
     if (existingUser) {
-      throw new UserAlreadyExists(email.value);
+      throw new UserAlreadyExists(dto.email);
     }
 
+    const email = new Email(dto.email);
+    const userAggregate = UserAggregate.createUser(email);
+
     try {
-      const createdUser = await this.userRepository.createUser(user);
-      await this.eventEmitter.emit(
-        USER_CREATED_EVENT,
-        new UserCreatedEvent(createdUser.id, createdUser.getEmail()),
+      await this.userRepository.createUser(userAggregate.getUser());
+
+      await Promise.all(
+        userAggregate
+          .getDomainEvents()
+          .map((event) => this.eventEmitter.emit(event.name, event.data)),
       );
     } catch (error) {
       this.logger.error(`Failed to create user: ${error}`);

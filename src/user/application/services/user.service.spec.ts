@@ -47,16 +47,11 @@ describe('UserService', () => {
     const newUser = new CreateUserDTO();
     newUser.email = faker.internet.email();
 
-    const mockEmail = new Email(faker.internet.email());
-    const mockId = randomUUID();
-    const mockUser = new User(mockEmail, mockId);
-    (userRepository.createUser as jest.Mock).mockResolvedValue(mockUser);
-
     await userService.createUser(newUser);
     expect(userRepository.createUser).toHaveBeenCalledWith(expect.any(User));
     expect(eventEmitter.emit).toHaveBeenCalledWith(
       USER_CREATED_EVENT,
-      new UserCreatedEvent(mockId, mockUser.getEmail()),
+      new UserCreatedEvent(expect.any(String), newUser.email),
     );
   });
 
