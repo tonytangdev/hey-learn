@@ -53,4 +53,15 @@ describe('Organization Aggregate', () => {
     expect(organizationAggregate.members[0].user).toEqual(user);
     expect(organizationAggregate.members[0].organization).toEqual(organization);
   });
+
+  it('should create an organization', () => {
+    const organizationType = new OrganizationType(ORGANIZATION_TYPES.GROUP);
+    const organizationAggregate =
+      OrganizationAggregate.createOrganization(organizationType);
+    expect(organizationAggregate.organization).toBeInstanceOf(Organization);
+    expect(organizationAggregate.organization.getOrganizationType()).toEqual(
+      organizationType.value,
+    );
+    expect(organizationAggregate.members.length).toEqual(0);
+  });
 });
