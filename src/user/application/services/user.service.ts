@@ -30,7 +30,7 @@ export class UserService {
     const userAggregate = UserAggregate.createUser(dto.email);
 
     try {
-      await this.userRepository.createUser(userAggregate.getUser());
+      await this.userRepository.createUser(userAggregate.user);
     } catch (error) {
       this.logger.error(`Failed to create user: ${error}`);
       this.logger.error({ dto });

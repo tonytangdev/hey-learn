@@ -36,10 +36,10 @@ describe('OrganizationEntity', () => {
       const id = randomUUID();
       const organization = new Organization(
         organizationType,
+        user,
         id,
         new Date(),
         new Date(),
-        user,
         new Date(),
       );
       expect(organization).toBeDefined();

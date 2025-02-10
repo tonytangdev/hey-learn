@@ -10,10 +10,10 @@ const PREFIX = 'org_';
 export class Organization {
   constructor(
     private readonly organizationType: OrganizationType,
+    private createdBy?: User,
     public readonly id: string = PREFIX + randomUUID(),
     public readonly createdAt: Date = new Date(),
     public readonly updatedAt: Date = new Date(),
-    private createdBy?: User,
     public readonly deletedAt?: Date,
   ) {}
 

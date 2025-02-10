@@ -3,8 +3,13 @@ import {
   USER_CREATED_EVENT,
   UserCreatedEvent,
 } from '../../../user/application/events/user-created.event';
+import { Organization } from '../entities/organization.entity';
 import { User } from '../entities/user.entity';
 import { Email } from '../value-objects/email.value-object';
+import {
+  ORGANIZATION_TYPES,
+  OrganizationType,
+} from '../value-objects/organization-type.value-object';
 
 export class UserAggregate {
   private domainEvents: USER_CREATED_DOMAIN_EVENT[] = [];
@@ -29,7 +34,11 @@ export class UserAggregate {
   clearDomainEvents() {
     this.domainEvents = [];
   }
-  getUser() {
-    return this.user;
+  createDefaultOrganization() {
+    const defaultOrganization = new Organization(
+      new OrganizationType(ORGANIZATION_TYPES.SINGLE),
+      this.user,
+    );
+    this.user.addOrganization(defaultOrganization);
   }
 }

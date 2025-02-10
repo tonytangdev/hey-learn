@@ -9,8 +9,8 @@ describe('UserAggregate', () => {
   it('should create a user', () => {
     const emailAddress = faker.internet.email();
     const userAggregate = UserAggregate.createUser(emailAddress);
-    expect(userAggregate.getUser().getEmail()).toEqual(emailAddress);
-    expect(userAggregate.getUser().id).toBeDefined();
+    expect(userAggregate.user.getEmail()).toEqual(emailAddress);
+    expect(userAggregate.user.id).toBeDefined();
   });
 
   it('should get domain events', () => {
@@ -28,5 +28,12 @@ describe('UserAggregate', () => {
     const userAggregate = UserAggregate.createUser(emailAddress);
     userAggregate.clearDomainEvents();
     expect(userAggregate.getDomainEvents()).toHaveLength(0);
+  });
+
+  it('should create default organization', () => {
+    const emailAddress = faker.internet.email();
+    const userAggregate = UserAggregate.createUser(emailAddress);
+    userAggregate.createDefaultOrganization();
+    expect(userAggregate.user.organizations).toHaveLength(1);
   });
 });
