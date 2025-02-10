@@ -10,7 +10,6 @@ import {
   UserCreatedEvent,
 } from '../events/user-created.event';
 import { Email } from '../../domain/value-objects/email.value-object';
-import { randomUUID } from 'node:crypto';
 import {
   EVENT_EMITTER,
   EventEmitter,
