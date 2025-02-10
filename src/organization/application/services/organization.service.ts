@@ -36,6 +36,7 @@ export class OrganizationService {
 
       const organizationAggregate = OrganizationAggregate.createOrganization(
         new OrganizationType(ORGANIZATION_TYPES.SINGLE),
+        user,
       );
       organizationAggregate.addMember(user);
 

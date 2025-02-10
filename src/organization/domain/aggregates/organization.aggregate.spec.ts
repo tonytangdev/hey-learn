@@ -56,12 +56,16 @@ describe('Organization Aggregate', () => {
 
   it('should create an organization', () => {
     const organizationType = new OrganizationType(ORGANIZATION_TYPES.GROUP);
-    const organizationAggregate =
-      OrganizationAggregate.createOrganization(organizationType);
+    const user = new User(new Email(faker.internet.email()));
+    const organizationAggregate = OrganizationAggregate.createOrganization(
+      organizationType,
+      user,
+    );
     expect(organizationAggregate.organization).toBeInstanceOf(Organization);
     expect(organizationAggregate.organization.getOrganizationType()).toEqual(
       organizationType.value,
     );
     expect(organizationAggregate.members.length).toEqual(0);
+    expect(organizationAggregate.organization.getCreatedBy()).toEqual(user);
   });
 });

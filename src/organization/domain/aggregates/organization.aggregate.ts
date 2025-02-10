@@ -11,8 +11,15 @@ export class OrganizationAggregate {
 
   static createOrganization(
     organizationType: OrganizationType,
+    user: User,
   ): OrganizationAggregate {
-    const organization = new Organization(organizationType);
+    const organization = new Organization(
+      organizationType,
+      undefined,
+      undefined,
+      undefined,
+      user,
+    );
     const members = [];
     return new OrganizationAggregate(organization, members);
   }
