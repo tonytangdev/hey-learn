@@ -3,10 +3,25 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UserModule } from './user/user.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.getOrThrow('DATABASE_HOST'),
+        port: configService.getOrThrow('DATABASE_PORT'),
+        username: configService.getOrThrow('DATABASE_USERNAME'),
+        password: configService.getOrThrow('DATABASE_PASSWORD'),
+        database: configService.getOrThrow('DATABASE_NAME'),
+        synchronize: configService.getOrThrow('DATABASE_SYNCHRONIZE'),
+        autoLoadEntities: true,
+      }),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
