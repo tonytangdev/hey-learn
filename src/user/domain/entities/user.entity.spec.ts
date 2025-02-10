@@ -2,6 +2,11 @@ import { User } from './user.entity';
 import { Email } from '../value-objects/email.value-object';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
+import { Organization } from './organization.entity';
+import {
+  ORGANIZATION_TYPES,
+  OrganizationType,
+} from '../value-objects/organization-type.value-object';
 
 describe('User entity', () => {
   it('should create a user with default values if no arguments are provided', () => {
@@ -41,5 +46,15 @@ describe('User entity', () => {
     expect(user1.id).toMatch(/^user_/);
     expect(user2.id).toMatch(/^user_/);
     expect(user1.id).not.toEqual(user2.id);
+  });
+
+  it('should add an organization to the user', () => {
+    const email = new Email(faker.internet.email());
+    const user = new User(email);
+    const organization = new Organization(
+      new OrganizationType(ORGANIZATION_TYPES.SINGLE),
+    );
+    user.addOrganization(organization);
+    expect(user.organizations).toContain(organization);
   });
 });
