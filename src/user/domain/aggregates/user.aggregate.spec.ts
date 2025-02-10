@@ -4,13 +4,15 @@ import {
   UserCreatedEvent,
 } from '../../../user/application/events/user-created.event';
 import { UserAggregate } from './user.aggregate';
+import { Organization } from '../entities/organization.entity';
+import { Membership } from '../entities/membership.entity';
 
 describe('UserAggregate', () => {
   it('should create a user', () => {
     const emailAddress = faker.internet.email();
     const userAggregate = UserAggregate.createUser(emailAddress);
-    expect(userAggregate.user.getEmail()).toEqual(emailAddress);
-    expect(userAggregate.user.id).toBeDefined();
+    expect(userAggregate.getUserEmail()).toEqual(emailAddress);
+    expect(userAggregate.getUserId()).toBeDefined();
   });
 
   it('should get domain events', () => {
@@ -30,10 +32,13 @@ describe('UserAggregate', () => {
     expect(userAggregate.getDomainEvents()).toHaveLength(0);
   });
 
-  it('should create default organization', () => {
+  it('should create default organization and membership', () => {
     const emailAddress = faker.internet.email();
     const userAggregate = UserAggregate.createUser(emailAddress);
     userAggregate.createDefaultOrganization();
-    expect(userAggregate.user.organizations).toHaveLength(1);
+    expect(userAggregate.getDefaultOrganization()).toBeInstanceOf(Organization);
+    expect(userAggregate.getDefaultOrganizationMembership()).toBeInstanceOf(
+      Membership,
+    );
   });
 });
