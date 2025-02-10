@@ -1,4 +1,3 @@
-import { Email } from '../../domain/value-objects/email.value-object';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UserRepository } from '../repositories/user.repository';
 import { Inject, Injectable, Logger } from '@nestjs/common';
@@ -9,6 +8,8 @@ import {
 } from '../../../shared/interfaces/event-emitter';
 import { UserAlreadyExists } from '../errors/user-already-exists.error';
 import { UserAggregate } from '../../../user/domain/aggregates/user.aggregate';
+import { OrganizationRepository } from '../repositories/organization.repository';
+import { OrganizationMembershipRepository } from '../repositories/organization-membership.repository';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,8 @@ export class UserService {
 
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly organizationRepository: OrganizationRepository,
+    private readonly organizationMembershipRepo: OrganizationMembershipRepository,
 
     @Inject(EVENT_EMITTER)
     private readonly eventEmitter: EventEmitter,
@@ -28,9 +31,16 @@ export class UserService {
     }
 
     const userAggregate = UserAggregate.createUser(dto.email);
+    userAggregate.createDefaultOrganization();
 
     try {
-      await this.userRepository.createUser(userAggregate.user);
+      await this.userRepository.createUser(userAggregate.getUser());
+      await this.organizationRepository.create(
+        userAggregate.getDefaultOrganization(),
+      );
+      await this.organizationMembershipRepo.create(
+        userAggregate.getDefaultOrganizationMembership(),
+      );
     } catch (error) {
       this.logger.error(`Failed to create user: ${error}`);
       this.logger.error({ dto });

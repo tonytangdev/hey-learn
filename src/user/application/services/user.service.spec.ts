@@ -16,6 +16,8 @@ import {
 } from '../../../shared/interfaces/event-emitter';
 import { UserAlreadyExists } from '../errors/user-already-exists.error';
 import { Test } from '@nestjs/testing';
+import { OrganizationRepository } from '../repositories/organization.repository';
+import { OrganizationMembershipRepository } from '../repositories/organization-membership.repository';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -31,6 +33,18 @@ describe('UserService', () => {
           useValue: {
             createUser: jest.fn(),
             findByEmail: jest.fn(),
+          },
+        },
+        {
+          provide: OrganizationRepository,
+          useValue: {
+            create: jest.fn(),
+          },
+        },
+        {
+          provide: OrganizationMembershipRepository,
+          useValue: {
+            create: jest.fn(),
           },
         },
         { provide: EVENT_EMITTER, useValue: { emit: jest.fn() } },
