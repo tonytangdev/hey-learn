@@ -47,14 +47,4 @@ describe('User entity', () => {
     expect(user2.id).toMatch(/^user_/);
     expect(user1.id).not.toEqual(user2.id);
   });
-
-  it('should add an organization to the user', () => {
-    const email = new Email(faker.internet.email());
-    const user = new User(email);
-    const organization = new Organization(
-      new OrganizationType(ORGANIZATION_TYPES.SINGLE),
-    );
-    user.addOrganization(organization);
-    expect(user.organizations).toContain(organization);
-  });
 });

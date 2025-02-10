@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import { Email } from '../value-objects/email.value-object';
-import { Organization } from './organization.entity';
 
 const ID_PREFIX = 'user_';
 
@@ -11,14 +10,9 @@ export class User {
     public readonly createdAt: Date = new Date(),
     public readonly updatedAt: Date = new Date(),
     public readonly deletedAt?: Date,
-    public readonly organizations: Organization[] = [],
   ) {}
 
   getEmail(): string {
     return this.email.value;
-  }
-
-  addOrganization(organization: Organization) {
-    this.organizations.push(organization);
   }
 }
