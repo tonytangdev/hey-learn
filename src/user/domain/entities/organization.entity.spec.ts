@@ -1,12 +1,12 @@
-import { User } from '../../../user/domain/entities/user.entity';
+import { Organization } from './organization.entity';
+import { faker } from '@faker-js/faker';
+import { randomUUID } from 'node:crypto';
+import { Email } from '../value-objects/email.value-object';
+import { User } from './user.entity';
 import {
   ORGANIZATION_TYPES,
   OrganizationType,
 } from '../value-objects/organization-type.value-object';
-import { Organization } from './organization.entity';
-import { Email } from '../../../user/domain/value-objects/email.value-object';
-import { faker } from '@faker-js/faker';
-import { randomUUID } from 'node:crypto';
 
 describe('OrganizationEntity', () => {
   const organizationTypes = Object.keys(

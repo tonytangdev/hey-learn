@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { User } from '../../../user/domain/entities/user.entity';
 import { Organization } from './organization.entity';
+import { User } from './user.entity';
 
 const PREFIX = 'memb_';
 

@@ -1,13 +1,13 @@
-import { Email } from '../../../user/domain/value-objects/email.value-object';
 import { Membership } from './membership.entity';
 import { faker } from '@faker-js/faker';
 import { User } from '../../../user/domain/entities/user.entity';
 import { Organization } from './organization.entity';
+import { randomUUID } from 'node:crypto';
+import { Email } from '../value-objects/email.value-object';
 import {
   ORGANIZATION_TYPES,
   OrganizationType,
 } from '../value-objects/organization-type.value-object';
-import { randomUUID } from 'node:crypto';
 
 describe('Membership', () => {
   it('should be defined', () => {

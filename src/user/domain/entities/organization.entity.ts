@@ -1,9 +1,9 @@
-import { User } from 'src/user/domain/entities/user.entity';
-import {
-  OrganizationType,
-  ORGANIZATION_TYPES,
-} from '../value-objects/organization-type.value-object';
 import { randomUUID } from 'node:crypto';
+import {
+  ORGANIZATION_TYPES,
+  OrganizationType,
+} from 'src/user/domain/value-objects/organization-type.value-object';
+import { User } from './user.entity';
 
 const PREFIX = 'org_';
 
