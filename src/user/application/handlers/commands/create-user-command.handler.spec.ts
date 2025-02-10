@@ -6,6 +6,8 @@ import { Email } from '../../../domain/value-objects/email.value-object';
 import { Test } from '@nestjs/testing';
 import { UserRepository } from '../../repositories/user.repository';
 import { EVENT_EMITTER } from '../../../../shared/interfaces/event-emitter';
+import { OrganizationRepository } from '../../repositories/organization.repository';
+import { OrganizationMembershipRepository } from '../../repositories/organization-membership.repository';
 
 describe('CreateUserCommandHandler', () => {
   let createUserCommandHandler: CreateUserCommandHandler;
@@ -20,6 +22,18 @@ describe('CreateUserCommandHandler', () => {
         {
           provide: UserRepository,
           useValue: jest.fn(),
+        },
+        {
+          provide: OrganizationRepository,
+          useValue: {
+            create: jest.fn(),
+          },
+        },
+        {
+          provide: OrganizationMembershipRepository,
+          useValue: {
+            create: jest.fn(),
+          },
         },
         {
           provide: EVENT_EMITTER,
