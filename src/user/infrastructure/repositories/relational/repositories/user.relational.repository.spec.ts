@@ -61,12 +61,30 @@ describe('UserRelationalRepository', () => {
     expect(userRelationalRepository).toBeDefined();
   });
 
-  it('should create a user', async () => {
+  it('should create a user with repository', async () => {
     const user = new User(new Email(faker.internet.email()));
     const newUser = await userRelationalRepository.createUser(user);
     expect(typeORMRepository.manager.save).toHaveBeenCalledWith(
       expect.any(UserRelationalEntity),
     );
+    expect(newUser).toBeInstanceOf(User);
+  });
+
+  it('should create a user with the entity manager', async () => {
+    const user = new User(new Email(faker.internet.email()));
+    const em = {
+      save: jest.fn(() => {
+        const newUser = new UserRelationalEntity();
+        newUser.id = randomUUID();
+        newUser.email = faker.internet.email();
+        newUser.createdAt = new Date();
+        newUser.updatedAt = new Date();
+        newUser.deletedAt = null;
+        return newUser;
+      }),
+    };
+    const newUser = await userRelationalRepository.createUser(user, em as any);
+    expect(em.save).toHaveBeenCalledWith(expect.any(UserRelationalEntity));
     expect(newUser).toBeInstanceOf(User);
   });
 
