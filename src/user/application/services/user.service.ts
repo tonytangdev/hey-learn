@@ -10,6 +10,10 @@ import { UserAlreadyExists } from '../errors/user-already-exists.error';
 import { UserAggregate } from '../../../user/domain/aggregates/user.aggregate';
 import { OrganizationRepository } from '../repositories/organization.repository';
 import { OrganizationMembershipRepository } from '../repositories/organization-membership.repository';
+import {
+  TRANSACTION_MANAGER,
+  TransactionManager,
+} from '../../../shared/interfaces/transaction-manager';
 
 @Injectable()
 export class UserService {
@@ -20,6 +24,8 @@ export class UserService {
     private readonly organizationRepository: OrganizationRepository,
     private readonly organizationMembershipRepo: OrganizationMembershipRepository,
 
+    @Inject(TRANSACTION_MANAGER)
+    private readonly transactionManager: TransactionManager,
     @Inject(EVENT_EMITTER)
     private readonly eventEmitter: EventEmitter,
   ) {}
@@ -34,13 +40,15 @@ export class UserService {
     userAggregate.createDefaultOrganization();
 
     try {
-      await this.userRepository.createUser(userAggregate.getUser());
-      await this.organizationRepository.create(
-        userAggregate.getDefaultOrganization(),
-      );
-      await this.organizationMembershipRepo.create(
-        userAggregate.getDefaultOrganizationMembership(),
-      );
+      await this.transactionManager.execute(async (context) => {
+        await this.userRepository.createUser(userAggregate.getUser());
+        await this.organizationRepository.create(
+          userAggregate.getDefaultOrganization(),
+        );
+        await this.organizationMembershipRepo.create(
+          userAggregate.getDefaultOrganizationMembership(),
+        );
+      });
     } catch (error) {
       this.logger.error(`Failed to create user: ${error}`);
       this.logger.error({ dto });
