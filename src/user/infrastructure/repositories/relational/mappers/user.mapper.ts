@@ -1,17 +1,16 @@
-import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { User } from '../../../../../user/domain/entities/user.entity';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
+import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 export class UserMapper {
   static toDomain(user: UserRelationalEntity) {
-    const email = new Email(user.email);
-    return new User(
-      email,
-      user.id,
-      user.createdAt,
-      user.updatedAt,
-      user.deletedAt ?? undefined,
-    );
+    return new UserEntityBuilder()
+      .withEmail(user.email)
+      .withId(user.id)
+      .withCreatedAt(user.createdAt)
+      .withUpdatedAt(user.updatedAt)
+      .withDeletedAt(user.deletedAt ?? undefined)
+      .build();
   }
 
   static toPersistence(user: User) {

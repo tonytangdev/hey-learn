@@ -5,10 +5,9 @@ import {
   ORGANIZATION_TYPES,
   OrganizationType,
 } from '../../../../../user/domain/value-objects/organization-type.value-object';
-import { User } from '../../../../../user/domain/entities/user.entity';
-import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
+import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 describe('OrganizationMapper', () => {
   let organizationRelationalEntity: OrganizationRelationalEntity;
@@ -32,13 +31,15 @@ describe('OrganizationMapper', () => {
     const organizationType = new OrganizationType(
       organizationRelationalEntity.type,
     );
-    const createdBy = new User(
-      new Email(organizationRelationalEntity.createdBy.email),
-      organizationRelationalEntity.createdBy.id,
-      organizationRelationalEntity.createdBy.createdAt,
-      organizationRelationalEntity.createdBy.updatedAt,
-      organizationRelationalEntity.createdBy.deletedAt ?? undefined,
-    );
+    const createdBy = new UserEntityBuilder()
+      .withEmail(organizationRelationalEntity.createdBy.email)
+      .withId(organizationRelationalEntity.createdBy.id)
+      .withCreatedAt(organizationRelationalEntity.createdBy.createdAt)
+      .withUpdatedAt(organizationRelationalEntity.createdBy.updatedAt)
+      .withDeletedAt(
+        organizationRelationalEntity.createdBy.deletedAt ?? undefined,
+      )
+      .build();
 
     organization = new Organization(
       organizationType,

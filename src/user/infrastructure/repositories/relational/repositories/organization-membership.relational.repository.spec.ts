@@ -16,6 +16,7 @@ import { OrganizationMembershipRelationalRepository } from './organization-membe
 import { randomUUID } from 'node:crypto';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
+import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 describe('OrganizationMembershipRelationalRepository', () => {
   let organizationMembershipRelationRepository: OrganizationMembershipRepository;
@@ -122,7 +123,9 @@ describe('OrganizationMembershipRelationalRepository', () => {
   });
 
   it('should save organization membership', async () => {
-    const user = new User(new Email(faker.internet.email()));
+    const user = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
     const organization = new Organization(
       new OrganizationType(ORGANIZATION_TYPES.SINGLE),
     );
@@ -135,7 +138,9 @@ describe('OrganizationMembershipRelationalRepository', () => {
   });
 
   it('should save organization membership with entity manager', async () => {
-    const user = new User(new Email(faker.internet.email()));
+    const user = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
     const organization = new Organization(
       new OrganizationType(ORGANIZATION_TYPES.SINGLE),
     );

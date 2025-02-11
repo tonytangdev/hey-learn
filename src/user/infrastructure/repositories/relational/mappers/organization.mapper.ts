@@ -1,9 +1,9 @@
 import { OrganizationType } from '../../../../../user/domain/value-objects/organization-type.value-object';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { User } from '../../../../../user/domain/entities/user.entity';
-import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
+import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 export class OrganizationMapper {
   static toDomain(organizationRelationalEntity: OrganizationRelationalEntity) {
@@ -12,13 +12,15 @@ export class OrganizationMapper {
     );
     let createdBy: User | undefined;
     if (organizationRelationalEntity.createdBy) {
-      createdBy = new User(
-        new Email(organizationRelationalEntity.createdBy.email),
-        organizationRelationalEntity.createdBy.id,
-        organizationRelationalEntity.createdBy.createdAt,
-        organizationRelationalEntity.createdBy.updatedAt,
-        organizationRelationalEntity.createdBy.deletedAt ?? undefined,
-      );
+      createdBy = new UserEntityBuilder()
+        .withEmail(organizationRelationalEntity.createdBy.email)
+        .withId(organizationRelationalEntity.createdBy.id)
+        .withCreatedAt(organizationRelationalEntity.createdBy.createdAt)
+        .withUpdatedAt(organizationRelationalEntity.createdBy.updatedAt)
+        .withDeletedAt(
+          organizationRelationalEntity.createdBy.deletedAt ?? undefined,
+        )
+        .build();
     }
 
     return new Organization(

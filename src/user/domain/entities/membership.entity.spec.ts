@@ -8,11 +8,12 @@ import {
   ORGANIZATION_TYPES,
   OrganizationType,
 } from '../value-objects/organization-type.value-object';
+import { UserEntityBuilder } from '../entities-builders/user.entity-builder';
 
 describe('Membership', () => {
   it('should be defined', () => {
     const email = new Email(faker.internet.email());
-    const user = new User(email);
+    const user = new UserEntityBuilder().withEmail(email.value).build();
     const organizationType = new OrganizationType(ORGANIZATION_TYPES.SINGLE);
     const organization = new Organization(organizationType);
     const membership = new Membership(user, organization);
@@ -30,7 +31,7 @@ describe('Membership', () => {
 
   it('should create a membership with all of its properties', () => {
     const email = new Email(faker.internet.email());
-    const user = new User(email);
+    const user = new UserEntityBuilder().withEmail(email.value).build();
     const organizationType = new OrganizationType(ORGANIZATION_TYPES.SINGLE);
     const organization = new Organization(organizationType);
     organization.setCreatedBy(user);

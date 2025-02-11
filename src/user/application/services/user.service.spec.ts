@@ -23,6 +23,7 @@ import {
 } from '../../../shared/interfaces/transaction-manager';
 import { Organization } from '../../../user/domain/entities/organization.entity';
 import { Membership } from '../../../user/domain/entities/membership.entity';
+import { UserEntityBuilder } from '../../../user/domain/entities-builders/user.entity-builder';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -122,7 +123,7 @@ describe('UserService', () => {
     const newUser = new CreateUserDTO();
     newUser.email = faker.internet.email();
     (userRepository.findByEmail as jest.Mock).mockResolvedValueOnce(
-      new User(new Email(newUser.email)),
+      new UserEntityBuilder().withEmail(newUser.email).build(),
     );
     await expect(userService.createUser(newUser)).rejects.toThrow(
       new UserAlreadyExists(newUser.email),

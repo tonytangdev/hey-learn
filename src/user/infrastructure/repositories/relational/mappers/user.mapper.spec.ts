@@ -4,17 +4,18 @@ import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { faker } from '@faker-js/faker/';
 import { UserMapper } from './user.mapper';
 import { randomUUID } from 'node:crypto';
+import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 describe.only('UserMapper', () => {
   it.each([
-    new User(new Email(faker.internet.email())),
-    new User(
-      new Email(faker.internet.email()),
-      randomUUID(),
-      faker.date.past(),
-      faker.date.past(),
-      faker.date.past(),
-    ),
+    new UserEntityBuilder().withEmail(faker.internet.email()).build(),
+    new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .withId(randomUUID())
+      .withCreatedAt(faker.date.past())
+      .withUpdatedAt(faker.date.past())
+      .withDeletedAt(faker.date.past())
+      .build(),
   ])('should return an entity to persist', (user) => {
     const userRelationalEntity = UserMapper.toPersistence(user);
     expect(userRelationalEntity).toBeInstanceOf(UserRelationalEntity);

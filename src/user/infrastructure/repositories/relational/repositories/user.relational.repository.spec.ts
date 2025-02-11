@@ -8,6 +8,7 @@ import { Email } from '../../../../../user/domain/value-objects/email.value-obje
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { Repository } from 'typeorm';
+import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 describe('UserRelationalRepository', () => {
   let userRelationalRepository: UserRelationalRepository;
@@ -62,7 +63,9 @@ describe('UserRelationalRepository', () => {
   });
 
   it('should create a user with repository', async () => {
-    const user = new User(new Email(faker.internet.email()));
+    const user = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
     const newUser = await userRelationalRepository.createUser(user);
     expect(typeORMRepository.manager.save).toHaveBeenCalledWith(
       expect.any(UserRelationalEntity),
@@ -71,7 +74,9 @@ describe('UserRelationalRepository', () => {
   });
 
   it('should create a user with the entity manager', async () => {
-    const user = new User(new Email(faker.internet.email()));
+    const user = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
     const em = {
       save: jest.fn(() => {
         const newUser = new UserRelationalEntity();

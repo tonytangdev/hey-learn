@@ -14,6 +14,7 @@ import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { faker } from '@faker-js/faker';
 import { User } from '../../../../../user/domain/entities/user.entity';
 import { Email } from '../../../../../user/domain/value-objects/email.value-object';
+import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 describe('Organization Repository', () => {
   let organizationRepository: OrganizationRepository;
@@ -89,7 +90,9 @@ describe('Organization Repository', () => {
     new OrganizationType(ORGANIZATION_TYPES.PUBLIC),
     new OrganizationType(ORGANIZATION_TYPES.SINGLE),
   ])('should save organization', async (organizationType) => {
-    const createdBy = new User(new Email(faker.internet.email()));
+    const createdBy = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
     const organization = new Organization(organizationType, createdBy);
     await organizationRepository.create(organization);
     expect(typeORMRepository.manager.save).toHaveBeenCalledWith(
@@ -102,7 +105,9 @@ describe('Organization Repository', () => {
     new OrganizationType(ORGANIZATION_TYPES.PUBLIC),
     new OrganizationType(ORGANIZATION_TYPES.SINGLE),
   ])('should save organization using context', async (organizationType) => {
-    const createdBy = new User(new Email(faker.internet.email()));
+    const createdBy = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
     const organization = new Organization(organizationType, createdBy);
     await organizationRepository.create(organization, entityManager);
     expect(entityManager.save).toHaveBeenCalledWith(

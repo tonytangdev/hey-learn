@@ -4,14 +4,13 @@ import { faker } from '@faker-js/faker';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { OrganizationMembershipMapper } from './organization-membership.mapper';
-import { User } from '../../../../../user/domain/entities/user.entity';
-import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
 import {
   ORGANIZATION_TYPES,
   OrganizationType,
 } from '../../../../../user/domain/value-objects/organization-type.value-object';
 import { Membership } from '../../../../../user/domain/entities/membership.entity';
+import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 describe('OrganizationMembershipMapper', () => {
   it('should return domain entity', () => {
@@ -61,8 +60,12 @@ describe('OrganizationMembershipMapper', () => {
   });
 
   it('should map to relational entity', () => {
-    const user = new User(new Email(faker.internet.email()));
-    const createdBy = new User(new Email(faker.internet.email()));
+    const user = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
+    const createdBy = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
     const organization = new Organization(
       new OrganizationType(ORGANIZATION_TYPES.SINGLE),
       createdBy,

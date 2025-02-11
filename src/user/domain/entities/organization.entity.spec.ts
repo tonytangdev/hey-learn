@@ -7,6 +7,7 @@ import {
   ORGANIZATION_TYPES,
   OrganizationType,
 } from '../value-objects/organization-type.value-object';
+import { UserEntityBuilder } from '../entities-builders/user.entity-builder';
 
 describe('OrganizationEntity', () => {
   const organizationTypes = Object.keys(
@@ -31,8 +32,9 @@ describe('OrganizationEntity', () => {
     'should create the organization of type %s with id, createdAt, updatedAt and deletedAt',
     (type) => {
       const organizationType = new OrganizationType(type);
-      const email = new Email(faker.internet.email());
-      const user = new User(email);
+      const user = new UserEntityBuilder()
+        .withEmail(faker.internet.email())
+        .build();
       const id = randomUUID();
       const organization = new Organization(
         organizationType,
@@ -52,8 +54,9 @@ describe('OrganizationEntity', () => {
 
   it('should set the createdBy', () => {
     const organizationType = new OrganizationType(ORGANIZATION_TYPES.SINGLE);
-    const email = new Email(faker.internet.email());
-    const user = new User(email);
+    const user = new UserEntityBuilder()
+      .withEmail(faker.internet.email())
+      .build();
     const organization = new Organization(organizationType);
     organization.setCreatedBy(user);
     expect(organization.getCreatedBy()).toEqual(user);

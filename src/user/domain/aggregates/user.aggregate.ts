@@ -3,10 +3,10 @@ import {
   USER_CREATED_EVENT,
   UserCreatedEvent,
 } from '../../../user/application/events/user-created.event';
+import { UserEntityBuilder } from '../entities-builders/user.entity-builder';
 import { Membership } from '../entities/membership.entity';
 import { Organization } from '../entities/organization.entity';
 import { User } from '../entities/user.entity';
-import { Email } from '../value-objects/email.value-object';
 import {
   ORGANIZATION_TYPES,
   OrganizationType,
@@ -20,8 +20,7 @@ export class UserAggregate {
   constructor(private readonly user: User) {}
 
   static createUser(emailAddress: string) {
-    const email = new Email(emailAddress);
-    const user = new User(email);
+    const user = new UserEntityBuilder().withEmail(emailAddress).build();
     const userAggregate = new UserAggregate(user);
     userAggregate.domainEvents.push({
       name: USER_CREATED_EVENT,
