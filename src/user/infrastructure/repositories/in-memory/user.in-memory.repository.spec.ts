@@ -1,5 +1,4 @@
 import { UserInMemoryRepository } from './user.in-memory.repository';
-import { Email } from '../../../domain/value-objects/email.value-object';
 import { faker } from '@faker-js/faker';
 import { UserEntityBuilder } from '../../../../user/domain/entities-builders/user.entity-builder';
 
@@ -16,8 +15,7 @@ describe('UserInMemoryRepository', () => {
     expect(userFound).toEqual(user);
   });
   it('should not find a user', async () => {
-    const email = new Email(faker.internet.email());
-    const userFound = await userRepository.findByEmail(email.value);
+    const userFound = await userRepository.findByEmail(faker.internet.email());
     expect(userFound).toBeNull();
   });
 });
