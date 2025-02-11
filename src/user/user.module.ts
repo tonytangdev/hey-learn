@@ -8,6 +8,8 @@ import { EventEmitterDefault } from './infrastructure/event-emitters/event-emitt
 import { UserRelationalRepository } from './infrastructure/repositories/relational/repositories/user.relational.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRelationalEntity } from './infrastructure/repositories/relational/entities/user.relational-entity';
+import { OrganizationRepository } from './application/repositories/organization.repository';
+import { OrganizationRelationalRepository } from './infrastructure/repositories/relational/repositories/organization.relational.repository';
 
 @Module({
   controllers: [UserController],
@@ -17,6 +19,10 @@ import { UserRelationalEntity } from './infrastructure/repositories/relational/e
     {
       provide: UserRepository,
       useClass: UserRelationalRepository,
+    },
+    {
+      provide: OrganizationRepository,
+      useClass: OrganizationRelationalRepository,
     },
     {
       provide: EVENT_EMITTER,
