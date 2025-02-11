@@ -76,7 +76,8 @@
       "interfaces",
       "\\.module\\.ts",
       "<rootDir>/main.ts",
-      "\\.mock\\.ts"
+      "\\.mock\\.ts",
+      "\\.relational-entity.ts"
     ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
