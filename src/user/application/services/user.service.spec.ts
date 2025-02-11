@@ -17,7 +17,10 @@ import { UserAlreadyExists } from '../errors/user-already-exists.error';
 import { Test } from '@nestjs/testing';
 import { OrganizationRepository } from '../repositories/organization.repository';
 import { OrganizationMembershipRepository } from '../repositories/organization-membership.repository';
-import { TRANSACTION_MANAGER } from '../../../shared/interfaces/transaction-manager';
+import {
+  TRANSACTION_MANAGER,
+  TransactionManager,
+} from '../../../shared/interfaces/transaction-manager';
 import { Organization } from '../../../user/domain/entities/organization.entity';
 import { Membership } from '../../../user/domain/entities/membership.entity';
 
@@ -26,6 +29,8 @@ describe('UserService', () => {
   let userRepository: UserRepository;
   let organizationRepository: OrganizationRepository;
   let organizationMembershipRepository: OrganizationMembershipRepository;
+  let transactionManager: TransactionManager;
+  let context: any = {};
   let eventEmitter: EventEmitter;
 
   beforeEach(async () => {
@@ -54,7 +59,7 @@ describe('UserService', () => {
         {
           provide: TRANSACTION_MANAGER,
           useValue: {
-            execute: jest.fn((fn) => fn()),
+            execute: jest.fn((fn) => fn(context)),
           },
         },
         {
@@ -73,6 +78,7 @@ describe('UserService', () => {
       moduleRef.get<OrganizationMembershipRepository>(
         OrganizationMembershipRepository,
       );
+    transactionManager = moduleRef.get<TransactionManager>(TRANSACTION_MANAGER);
     eventEmitter = moduleRef.get<EventEmitter>(EVENT_EMITTER);
   });
 
@@ -92,11 +98,14 @@ describe('UserService', () => {
     const newUser = new CreateUserDTO();
     newUser.email = faker.internet.email();
     await userService.createUser(newUser);
+    expect(transactionManager.execute).toHaveBeenCalled();
     expect(organizationRepository.create).toHaveBeenCalledWith(
       expect.any(Organization),
+      context,
     );
     expect(organizationMembershipRepository.create).toHaveBeenCalledWith(
       expect.any(Membership),
+      context,
     );
   });
 

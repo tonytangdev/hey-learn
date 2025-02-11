@@ -44,9 +44,11 @@ export class UserService {
         await this.userRepository.createUser(userAggregate.getUser());
         await this.organizationRepository.create(
           userAggregate.getDefaultOrganization(),
+          context,
         );
         await this.organizationMembershipRepo.create(
           userAggregate.getDefaultOrganizationMembership(),
+          context,
         );
       });
     } catch (error) {
