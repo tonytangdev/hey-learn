@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Membership } from '../../../../../user/domain/entities/membership.entity';
 import { User } from '../../../../../user/domain/entities/user.entity';
 import { Email } from '../../../../../user/domain/value-objects/email.value-object';
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
 import {
   ORGANIZATION_TYPES,

@@ -11,7 +11,7 @@ import {
 import { OrganizationRelationalRepository } from './organization.relational.repository';
 import { randomUUID } from 'node:crypto';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { User } from '../../../../../user/domain/entities/user.entity';
 import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 

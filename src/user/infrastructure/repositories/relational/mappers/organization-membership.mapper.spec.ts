@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { OrganizationMembershipRelationalEntity } from '../entities/organization-membership.relational-entity';
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { OrganizationMembershipMapper } from './organization-membership.mapper';
