@@ -100,4 +100,14 @@ describe('UserRelationalRepository', () => {
       email: expect.any(String),
     });
   });
+
+  it('should return null if user not found', async () => {
+    const email = faker.internet.email();
+    (typeORMRepository.findOneBy as jest.Mock).mockResolvedValue(null);
+    const foundUser = await userRelationalRepository.findByEmail(email);
+    expect(foundUser).toBeNull();
+    expect(typeORMRepository.findOneBy).toHaveBeenCalledWith({
+      email: expect.any(String),
+    });
+  });
 });
