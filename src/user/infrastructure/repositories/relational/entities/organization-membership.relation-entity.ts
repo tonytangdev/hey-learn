@@ -7,23 +7,21 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { OrganizationRelationalEntity } from './organization.relational-entity';
 import { UserRelationalEntity } from './user.relational-entity';
-import { ORGANIZATION_TYPES } from '../../../../../user/domain/value-objects/organization-type.value-object';
 
-@Entity({ name: 'organization' })
-export class OrganizationRelationalEntity {
+@Entity({ name: 'membership' })
+export class OrganizationMembershipRelationEntity {
   @PrimaryColumn()
   id: string;
 
-  @OneToOne(() => UserRelationalEntity)
-  @JoinColumn({ name: 'created_by' })
-  createdBy: UserRelationalEntity;
+  @OneToOne(() => OrganizationRelationalEntity)
+  @JoinColumn({ name: 'organization_id' })
+  organization: Omit<OrganizationRelationalEntity, 'createdBy'>;
 
-  @Column({
-    enum: ORGANIZATION_TYPES,
-    type: 'enum',
-  })
-  type: ORGANIZATION_TYPES;
+  @OneToOne(() => UserRelationalEntity)
+  @JoinColumn({ name: 'user_id' })
+  user: UserRelationalEntity;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
