@@ -1,6 +1,6 @@
 import { Membership } from '../../../../../user/domain/entities/membership.entity';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
-import { OrganizationMembershipRelationEntity } from '../entities/organization-membership.relation-entity';
+import { OrganizationMembershipRelationalEntity } from '../entities/organization-membership.relational-entity';
 import { User } from '../../../../../user/domain/entities/user.entity';
 import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
@@ -8,7 +8,7 @@ import { OrganizationType } from '../../../../../user/domain/value-objects/organ
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 
 export class OrganizationMembershipMapper {
-  static toDomain(entity: OrganizationMembershipRelationEntity) {
+  static toDomain(entity: OrganizationMembershipRelationalEntity) {
     const user = new User(
       new Email(entity.user.email),
       entity.user.id,
@@ -51,7 +51,7 @@ export class OrganizationMembershipMapper {
     organizationEntity.updatedAt = membership.organization.updatedAt;
     organizationEntity.deletedAt = membership.organization.deletedAt ?? null;
 
-    const entity = new OrganizationMembershipRelationEntity();
+    const entity = new OrganizationMembershipRelationalEntity();
     entity.createdAt = membership.createdAt;
     entity.updatedAt = membership.updatedAt;
     entity.deletedAt = membership.deletedAt ?? null;

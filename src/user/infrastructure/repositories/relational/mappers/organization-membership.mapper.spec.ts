@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { OrganizationMembershipRelationEntity } from '../entities/organization-membership.relation-entity';
+import { OrganizationMembershipRelationalEntity } from '../entities/organization-membership.relational-entity';
 import { faker } from '@faker-js/faker/.';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
@@ -15,7 +15,7 @@ import { Membership } from '../../../../../user/domain/entities/membership.entit
 
 describe('OrganizationMembershipMapper', () => {
   it('should return domain entity', () => {
-    const entity = new OrganizationMembershipRelationEntity();
+    const entity = new OrganizationMembershipRelationalEntity();
     entity.id = randomUUID();
     entity.createdAt = faker.date.past();
     entity.updatedAt = faker.date.recent();

@@ -11,7 +11,7 @@ import { OrganizationRelationalEntity } from './organization.relational-entity';
 import { UserRelationalEntity } from './user.relational-entity';
 
 @Entity({ name: 'membership' })
-export class OrganizationMembershipRelationEntity {
+export class OrganizationMembershipRelationalEntity {
   @PrimaryColumn()
   id: string;
 
