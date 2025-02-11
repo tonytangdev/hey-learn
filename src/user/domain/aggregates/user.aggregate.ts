@@ -7,10 +7,7 @@ import { UserEntityBuilder } from '../entities-builders/user.entity-builder';
 import { Membership } from '../entities/membership.entity';
 import { Organization } from '../entities/organization.entity';
 import { User } from '../entities/user.entity';
-import {
-  ORGANIZATION_TYPES,
-  OrganizationType,
-} from '../value-objects/organization-type.value-object';
+import { ORGANIZATION_TYPES } from '../value-objects/organization-type.value-object';
 
 export class UserAggregate {
   private domainEvents: USER_CREATED_DOMAIN_EVENT[] = [];
@@ -52,7 +49,7 @@ export class UserAggregate {
 
   createDefaultOrganization() {
     const defaultOrganization = new Organization(
-      new OrganizationType(ORGANIZATION_TYPES.SINGLE),
+      ORGANIZATION_TYPES.SINGLE,
       this.user,
     );
     const organizationMembership = new Membership(

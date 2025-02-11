@@ -1,10 +1,7 @@
 import { OrganizationMapper } from './organization.mapper';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
-import {
-  ORGANIZATION_TYPES,
-  OrganizationType,
-} from '../../../../../user/domain/value-objects/organization-type.value-object';
+import { ORGANIZATION_TYPES } from '../../../../../user/domain/value-objects/organization-type.value-object';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
@@ -28,9 +25,6 @@ describe('OrganizationMapper', () => {
       deletedAt: null,
     };
 
-    const organizationType = new OrganizationType(
-      organizationRelationalEntity.type,
-    );
     const createdBy = new UserEntityBuilder()
       .withEmail(organizationRelationalEntity.createdBy.email)
       .withId(organizationRelationalEntity.createdBy.id)
@@ -42,7 +36,7 @@ describe('OrganizationMapper', () => {
       .build();
 
     organization = new Organization(
-      organizationType,
+      organizationRelationalEntity.type,
       createdBy,
       organizationRelationalEntity.id,
       organizationRelationalEntity.createdAt,

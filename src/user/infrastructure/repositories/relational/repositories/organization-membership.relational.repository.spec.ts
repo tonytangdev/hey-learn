@@ -4,14 +4,9 @@ import { Repository } from 'typeorm';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Membership } from '../../../../../user/domain/entities/membership.entity';
-import { User } from '../../../../../user/domain/entities/user.entity';
-import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { faker } from '@faker-js/faker';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
-import {
-  ORGANIZATION_TYPES,
-  OrganizationType,
-} from '../../../../../user/domain/value-objects/organization-type.value-object';
+import { ORGANIZATION_TYPES } from '../../../../../user/domain/value-objects/organization-type.value-object';
 import { OrganizationMembershipRelationalRepository } from './organization-membership.relational.repository';
 import { randomUUID } from 'node:crypto';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
@@ -126,9 +121,7 @@ describe('OrganizationMembershipRelationalRepository', () => {
     const user = new UserEntityBuilder()
       .withEmail(faker.internet.email())
       .build();
-    const organization = new Organization(
-      new OrganizationType(ORGANIZATION_TYPES.SINGLE),
-    );
+    const organization = new Organization(ORGANIZATION_TYPES.SINGLE);
     const membership = new Membership(user, organization);
 
     await organizationMembershipRelationRepository.create(membership);
@@ -141,9 +134,7 @@ describe('OrganizationMembershipRelationalRepository', () => {
     const user = new UserEntityBuilder()
       .withEmail(faker.internet.email())
       .build();
-    const organization = new Organization(
-      new OrganizationType(ORGANIZATION_TYPES.SINGLE),
-    );
+    const organization = new Organization(ORGANIZATION_TYPES.SINGLE);
     const membership = new Membership(user, organization);
 
     await organizationMembershipRelationRepository.create(

@@ -5,10 +5,7 @@ import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { OrganizationMembershipMapper } from './organization-membership.mapper';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
-import {
-  ORGANIZATION_TYPES,
-  OrganizationType,
-} from '../../../../../user/domain/value-objects/organization-type.value-object';
+import { ORGANIZATION_TYPES } from '../../../../../user/domain/value-objects/organization-type.value-object';
 import { Membership } from '../../../../../user/domain/entities/membership.entity';
 import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
@@ -66,10 +63,7 @@ describe('OrganizationMembershipMapper', () => {
     const createdBy = new UserEntityBuilder()
       .withEmail(faker.internet.email())
       .build();
-    const organization = new Organization(
-      new OrganizationType(ORGANIZATION_TYPES.SINGLE),
-      createdBy,
-    );
+    const organization = new Organization(ORGANIZATION_TYPES.SINGLE, createdBy);
     const membership = new Membership(user, organization);
 
     const result = OrganizationMembershipMapper.toPersistence(membership);

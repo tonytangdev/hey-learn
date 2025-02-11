@@ -3,10 +3,7 @@ import { faker } from '@faker-js/faker';
 import { User } from '../../../user/domain/entities/user.entity';
 import { Organization } from './organization.entity';
 import { randomUUID } from 'node:crypto';
-import {
-  ORGANIZATION_TYPES,
-  OrganizationType,
-} from '../value-objects/organization-type.value-object';
+import { ORGANIZATION_TYPES } from '../value-objects/organization-type.value-object';
 import { UserEntityBuilder } from '../entities-builders/user.entity-builder';
 
 describe('Membership', () => {
@@ -14,8 +11,7 @@ describe('Membership', () => {
     const user = new UserEntityBuilder()
       .withEmail(faker.internet.email())
       .build();
-    const organizationType = new OrganizationType(ORGANIZATION_TYPES.SINGLE);
-    const organization = new Organization(organizationType);
+    const organization = new Organization(ORGANIZATION_TYPES.SINGLE);
     const membership = new Membership(user, organization);
 
     expect(membership).toBeDefined();
@@ -33,8 +29,7 @@ describe('Membership', () => {
     const user = new UserEntityBuilder()
       .withEmail(faker.internet.email())
       .build();
-    const organizationType = new OrganizationType(ORGANIZATION_TYPES.SINGLE);
-    const organization = new Organization(organizationType);
+    const organization = new Organization(ORGANIZATION_TYPES.SINGLE);
     organization.setCreatedBy(user);
     const id = randomUUID();
     const createdAt = new Date(faker.date.past().getTime());

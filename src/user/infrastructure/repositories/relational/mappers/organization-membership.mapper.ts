@@ -2,7 +2,6 @@ import { Membership } from '../../../../../user/domain/entities/membership.entit
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { OrganizationMembershipRelationalEntity } from '../entities/organization-membership.relational-entity';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
-import { OrganizationType } from '../../../../../user/domain/value-objects/organization-type.value-object';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
@@ -16,7 +15,7 @@ export class OrganizationMembershipMapper {
       .withDeletedAt(entity.user.deletedAt ?? undefined)
       .build();
     const organization = new Organization(
-      new OrganizationType(entity.organization.type),
+      entity.organization.type,
       undefined,
       entity.organization.id,
       entity.organization.createdAt,

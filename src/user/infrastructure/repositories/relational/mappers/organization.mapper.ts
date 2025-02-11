@@ -1,4 +1,3 @@
-import { OrganizationType } from '../../../../../user/domain/value-objects/organization-type.value-object';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { User } from '../../../../../user/domain/entities/user.entity';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
@@ -7,9 +6,6 @@ import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/
 
 export class OrganizationMapper {
   static toDomain(organizationRelationalEntity: OrganizationRelationalEntity) {
-    const organizationType = new OrganizationType(
-      organizationRelationalEntity.type,
-    );
     let createdBy: User | undefined;
     if (organizationRelationalEntity.createdBy) {
       createdBy = new UserEntityBuilder()
@@ -24,7 +20,7 @@ export class OrganizationMapper {
     }
 
     return new Organization(
-      organizationType,
+      organizationRelationalEntity.type,
       createdBy,
       organizationRelationalEntity.id,
       organizationRelationalEntity.createdAt,

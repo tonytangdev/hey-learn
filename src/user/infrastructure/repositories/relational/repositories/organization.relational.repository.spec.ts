@@ -4,16 +4,11 @@ import { OrganizationRelationalEntity } from '../entities/organization.relationa
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Organization } from '../../../../../user/domain/entities/organization.entity';
-import {
-  ORGANIZATION_TYPES,
-  OrganizationType,
-} from '../../../../../user/domain/value-objects/organization-type.value-object';
+import { ORGANIZATION_TYPES } from '../../../../../user/domain/value-objects/organization-type.value-object';
 import { OrganizationRelationalRepository } from './organization.relational.repository';
 import { randomUUID } from 'node:crypto';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { faker } from '@faker-js/faker';
-import { User } from '../../../../../user/domain/entities/user.entity';
-import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/user.entity-builder';
 
 describe('Organization Repository', () => {
@@ -86,9 +81,9 @@ describe('Organization Repository', () => {
   });
 
   it.each([
-    new OrganizationType(ORGANIZATION_TYPES.GROUP),
-    new OrganizationType(ORGANIZATION_TYPES.PUBLIC),
-    new OrganizationType(ORGANIZATION_TYPES.SINGLE),
+    ORGANIZATION_TYPES.GROUP,
+    ORGANIZATION_TYPES.PUBLIC,
+    ORGANIZATION_TYPES.SINGLE,
   ])('should save organization', async (organizationType) => {
     const createdBy = new UserEntityBuilder()
       .withEmail(faker.internet.email())
@@ -101,9 +96,9 @@ describe('Organization Repository', () => {
   });
 
   it.each([
-    new OrganizationType(ORGANIZATION_TYPES.GROUP),
-    new OrganizationType(ORGANIZATION_TYPES.PUBLIC),
-    new OrganizationType(ORGANIZATION_TYPES.SINGLE),
+    ORGANIZATION_TYPES.GROUP,
+    ORGANIZATION_TYPES.PUBLIC,
+    ORGANIZATION_TYPES.SINGLE,
   ])('should save organization using context', async (organizationType) => {
     const createdBy = new UserEntityBuilder()
       .withEmail(faker.internet.email())

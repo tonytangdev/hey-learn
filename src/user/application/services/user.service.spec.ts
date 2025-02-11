@@ -8,7 +8,6 @@ import {
   USER_CREATED_EVENT,
   UserCreatedEvent,
 } from '../events/user-created.event';
-import { Email } from '../../domain/value-objects/email.value-object';
 import {
   EVENT_EMITTER,
   EventEmitter,
