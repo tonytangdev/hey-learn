@@ -10,6 +10,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRelationalEntity } from './infrastructure/repositories/relational/entities/user.relational-entity';
 import { OrganizationRepository } from './application/repositories/organization.repository';
 import { OrganizationRelationalRepository } from './infrastructure/repositories/relational/repositories/organization.relational.repository';
+import { OrganizationMembershipRepository } from './application/repositories/organization-membership.repository';
+import { OrganizationMembershipRelationalRepository } from './infrastructure/repositories/relational/repositories/organization-membership.relational.repository';
+import { TRANSACTION_MANAGER } from '../shared/interfaces/transaction-manager';
+import { TransactionManagerTypeORM } from './infrastructure/transaction-managers/transaction-manager.typeorm';
+import { OrganizationRelationalEntity } from './infrastructure/repositories/relational/entities/organization.relational-entity';
+import { OrganizationMembershipRelationalEntity } from './infrastructure/repositories/relational/entities/organization-membership.relational-entity';
 
 @Module({
   controllers: [UserController],
@@ -25,11 +31,25 @@ import { OrganizationRelationalRepository } from './infrastructure/repositories/
       useClass: OrganizationRelationalRepository,
     },
     {
+      provide: OrganizationMembershipRepository,
+      useClass: OrganizationMembershipRelationalRepository,
+    },
+    {
+      provide: TRANSACTION_MANAGER,
+      useClass: TransactionManagerTypeORM,
+    },
+    {
       provide: EVENT_EMITTER,
       useClass: EventEmitterDefault,
     },
   ],
-  imports: [TypeOrmModule.forFeature([UserRelationalEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      UserRelationalEntity,
+      OrganizationRelationalEntity,
+      OrganizationMembershipRelationalEntity,
+    ]),
+  ],
   exports: [],
 })
 export class UserModule {}
