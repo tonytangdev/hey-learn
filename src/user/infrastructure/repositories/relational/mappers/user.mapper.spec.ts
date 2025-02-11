@@ -18,6 +18,7 @@ describe.only('UserMapper', () => {
       .build(),
   ])('should return an entity to persist', (user) => {
     const userRelationalEntity = UserMapper.toPersistence(user);
+
     expect(userRelationalEntity).toBeInstanceOf(UserRelationalEntity);
     expect(userRelationalEntity.id).toBe(user.id);
     expect(userRelationalEntity.email).toBe(user.getEmail());
@@ -35,7 +36,9 @@ describe.only('UserMapper', () => {
       userRelationalEntity.createdAt = faker.date.past();
       userRelationalEntity.updatedAt = faker.date.past();
       userRelationalEntity.deletedAt = date;
+
       const user = UserMapper.toDomain(userRelationalEntity);
+
       expect(user).toBeInstanceOf(User);
       expect(user.id).toBe(userRelationalEntity.id);
       expect(user.getEmail()).toBe(userRelationalEntity.email);
