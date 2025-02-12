@@ -30,7 +30,7 @@ describe('UserService', () => {
   let organizationRepository: OrganizationRepository;
   let organizationMembershipRepository: OrganizationMembershipRepository;
   let transactionManager: TransactionManager;
-  let context: any = {};
+  const context: any = {};
   let eventEmitter: EventEmitter;
 
   beforeEach(async () => {
@@ -59,7 +59,7 @@ describe('UserService', () => {
         {
           provide: TRANSACTION_MANAGER,
           useValue: {
-            execute: jest.fn((fn) => fn(context)),
+            execute: jest.fn((fn: (context: any) => void) => fn(context)),
           },
         },
         {

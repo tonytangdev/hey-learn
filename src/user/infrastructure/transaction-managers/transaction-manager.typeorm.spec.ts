@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataSource, EntityManager } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { TransactionManagerTypeORM } from './transaction-manager.typeorm';
-import { TransactionManager } from '../../../shared/interfaces/transaction-manager';
-import { faker } from '@faker-js/faker';
 
 describe('TransactionManagerTypeORM', () => {
   let transactionManager: TransactionManagerTypeORM;
@@ -15,7 +13,11 @@ describe('TransactionManagerTypeORM', () => {
         {
           provide: DataSource,
           useValue: {
-            transaction: jest.fn().mockImplementation((fn) => fn(jest.fn())),
+            transaction: jest
+              .fn()
+              .mockImplementation((fn: (fn: () => void) => void) =>
+                fn(jest.fn()),
+              ),
           },
         },
       ],
@@ -35,6 +37,7 @@ describe('TransactionManagerTypeORM', () => {
     const mockTransactionFunction = jest.fn().mockResolvedValue('result');
     const result = await transactionManager.execute(mockTransactionFunction);
     expect(result).toBe('result');
+    expect(dataSource.transaction).toHaveBeenCalled();
     expect(mockTransactionFunction).toHaveBeenCalled();
   });
 
@@ -45,6 +48,7 @@ describe('TransactionManagerTypeORM', () => {
     await expect(
       transactionManager.execute(mockTransactionFunction),
     ).rejects.toThrow('Transaction error');
+    expect(dataSource.transaction).toHaveBeenCalled();
     expect(mockTransactionFunction).toHaveBeenCalled();
   });
 });

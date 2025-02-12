@@ -16,7 +16,7 @@ import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/
 describe('OrganizationMembershipRelationalRepository', () => {
   let organizationMembershipRelationRepository: OrganizationMembershipRepository;
   let typeORMRepository: Repository<OrganizationMembershipRelationalEntity>;
-  let entityManager: any;
+  let entityManager: { save: () => void };
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({

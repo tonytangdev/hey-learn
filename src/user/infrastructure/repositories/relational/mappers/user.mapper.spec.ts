@@ -1,4 +1,3 @@
-import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { User } from '../../../../../user/domain/entities/user.entity';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { faker } from '@faker-js/faker/';

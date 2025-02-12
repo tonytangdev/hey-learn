@@ -4,7 +4,6 @@ import { OrganizationRepository } from 'src/user/application/repositories/organi
 import { Organization } from 'src/user/domain/entities/organization.entity';
 import { Repository, EntityManager } from 'typeorm';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
-import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { OrganizationMapper } from '../mappers/organization.mapper';
 
 @Injectable()

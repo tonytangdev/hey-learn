@@ -14,7 +14,7 @@ import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/
 describe('Organization Repository', () => {
   let organizationRepository: OrganizationRepository;
   let typeORMRepository: Repository<OrganizationRelationalEntity>;
-  let entityManager: any;
+  let entityManager: { save: () => void };
 
   let createdBy: UserRelationalEntity;
 

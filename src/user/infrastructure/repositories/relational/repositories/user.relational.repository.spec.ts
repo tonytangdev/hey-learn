@@ -4,7 +4,6 @@ import { UserRepository } from '../../../../application/repositories/user.reposi
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserRelationalEntity } from '../entities/user.relational-entity';
 import { User } from '../../../../../user/domain/entities/user.entity';
-import { Email } from '../../../../../user/domain/value-objects/email.value-object';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { Repository } from 'typeorm';
@@ -102,7 +101,7 @@ describe('UserRelationalRepository', () => {
     }
     expect(foundUser.getEmail()).toBeTruthy();
     expect(typeORMRepository.findOneBy).toHaveBeenCalledWith({
-      email: expect.any(String),
+      email: expect.any(String) as unknown as string,
     });
   });
 
@@ -112,7 +111,7 @@ describe('UserRelationalRepository', () => {
     const foundUser = await userRelationalRepository.findByEmail(email);
     expect(foundUser).toBeNull();
     expect(typeORMRepository.findOneBy).toHaveBeenCalledWith({
-      email: expect.any(String),
+      email: expect.any(String) as unknown as string,
     });
   });
 });
