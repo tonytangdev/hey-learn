@@ -14,7 +14,6 @@ import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/
 describe('Organization Repository', () => {
   let organizationRepository: OrganizationRepository;
   let typeORMRepository: Repository<OrganizationRelationalEntity>;
-  let entityManager: { save: () => void };
 
   let createdBy: UserRelationalEntity;
 
@@ -35,19 +34,17 @@ describe('Organization Repository', () => {
         {
           provide: getRepositoryToken(OrganizationRelationalEntity),
           useValue: {
-            manager: {
-              save: jest.fn(() => {
-                const newOrganization = new OrganizationRelationalEntity();
-                newOrganization.id = randomUUID();
-                newOrganization.type = ORGANIZATION_TYPES.SINGLE;
-                newOrganization.createdAt = new Date();
-                newOrganization.updatedAt = new Date();
-                newOrganization.deletedAt = null;
-                newOrganization.createdBy = createdBy;
+            save: jest.fn(() => {
+              const newOrganization = new OrganizationRelationalEntity();
+              newOrganization.id = randomUUID();
+              newOrganization.type = ORGANIZATION_TYPES.SINGLE;
+              newOrganization.createdAt = new Date();
+              newOrganization.updatedAt = new Date();
+              newOrganization.deletedAt = null;
+              newOrganization.createdBy = createdBy;
 
-                return newOrganization;
-              }),
-            },
+              return newOrganization;
+            }),
           },
         },
       ],
@@ -59,20 +56,6 @@ describe('Organization Repository', () => {
     typeORMRepository = moduleRef.get<Repository<OrganizationRelationalEntity>>(
       getRepositoryToken(OrganizationRelationalEntity),
     );
-
-    entityManager = {
-      save: jest.fn(() => {
-        const newOrganization = new OrganizationRelationalEntity();
-        newOrganization.id = randomUUID();
-        newOrganization.type = ORGANIZATION_TYPES.SINGLE;
-        newOrganization.createdAt = new Date();
-        newOrganization.updatedAt = new Date();
-        newOrganization.deletedAt = null;
-        newOrganization.createdBy = createdBy;
-
-        return newOrganization;
-      }),
-    };
   });
 
   it('should be defined', () => {
@@ -90,7 +73,7 @@ describe('Organization Repository', () => {
       .build();
     const organization = new Organization(organizationType, createdBy);
     await organizationRepository.create(organization);
-    expect(typeORMRepository.manager.save).toHaveBeenCalledWith(
+    expect(typeORMRepository.save).toHaveBeenCalledWith(
       expect.any(OrganizationRelationalEntity),
     );
   });
@@ -104,8 +87,8 @@ describe('Organization Repository', () => {
       .withEmail(faker.internet.email())
       .build();
     const organization = new Organization(organizationType, createdBy);
-    await organizationRepository.create(organization, entityManager);
-    expect(entityManager.save).toHaveBeenCalledWith(
+    await organizationRepository.create(organization);
+    expect(typeORMRepository.save).toHaveBeenCalledWith(
       expect.any(OrganizationRelationalEntity),
     );
   });

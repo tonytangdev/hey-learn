@@ -16,7 +16,6 @@ import { UserEntityBuilder } from '../../../../../user/domain/entities-builders/
 describe('OrganizationMembershipRelationalRepository', () => {
   let organizationMembershipRelationRepository: OrganizationMembershipRepository;
   let typeORMRepository: Repository<OrganizationMembershipRelationalEntity>;
-  let entityManager: { save: () => void };
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -28,41 +27,39 @@ describe('OrganizationMembershipRelationalRepository', () => {
         {
           provide: getRepositoryToken(OrganizationMembershipRelationalEntity),
           useValue: {
-            manager: {
-              save: jest.fn(() => {
-                const entity = new OrganizationMembershipRelationalEntity();
-                entity.id = randomUUID();
-                entity.createdAt = new Date();
-                entity.updatedAt = new Date();
-                entity.deletedAt = null;
+            save: jest.fn(() => {
+              const entity = new OrganizationMembershipRelationalEntity();
+              entity.id = randomUUID();
+              entity.createdAt = new Date();
+              entity.updatedAt = new Date();
+              entity.deletedAt = null;
 
-                const userEntity = new UserRelationalEntity();
-                userEntity.id = randomUUID();
-                userEntity.email = faker.internet.email();
-                userEntity.createdAt = new Date();
-                userEntity.updatedAt = new Date();
-                userEntity.deletedAt = null;
-                entity.user = userEntity;
+              const userEntity = new UserRelationalEntity();
+              userEntity.id = randomUUID();
+              userEntity.email = faker.internet.email();
+              userEntity.createdAt = new Date();
+              userEntity.updatedAt = new Date();
+              userEntity.deletedAt = null;
+              entity.user = userEntity;
 
-                const organizationEntity = new OrganizationRelationalEntity();
-                organizationEntity.id = randomUUID();
-                organizationEntity.type = ORGANIZATION_TYPES.SINGLE;
-                organizationEntity.createdAt = new Date();
-                organizationEntity.updatedAt = new Date();
-                organizationEntity.deletedAt = null;
+              const organizationEntity = new OrganizationRelationalEntity();
+              organizationEntity.id = randomUUID();
+              organizationEntity.type = ORGANIZATION_TYPES.SINGLE;
+              organizationEntity.createdAt = new Date();
+              organizationEntity.updatedAt = new Date();
+              organizationEntity.deletedAt = null;
 
-                const createdByEntity = new UserRelationalEntity();
-                createdByEntity.id = randomUUID();
-                createdByEntity.email = faker.internet.email();
-                createdByEntity.createdAt = new Date();
-                createdByEntity.updatedAt = new Date();
-                createdByEntity.deletedAt = null;
-                organizationEntity.createdBy = createdByEntity;
-                entity.organization = organizationEntity;
+              const createdByEntity = new UserRelationalEntity();
+              createdByEntity.id = randomUUID();
+              createdByEntity.email = faker.internet.email();
+              createdByEntity.createdAt = new Date();
+              createdByEntity.updatedAt = new Date();
+              createdByEntity.deletedAt = null;
+              organizationEntity.createdBy = createdByEntity;
+              entity.organization = organizationEntity;
 
-                return entity;
-              }),
-            },
+              return entity;
+            }),
           },
         },
       ],
@@ -75,42 +72,6 @@ describe('OrganizationMembershipRelationalRepository', () => {
     typeORMRepository = moduleRef.get<
       Repository<OrganizationMembershipRelationalEntity>
     >(getRepositoryToken(OrganizationMembershipRelationalEntity));
-
-    entityManager = {
-      save: jest.fn(() => {
-        const entity = new OrganizationMembershipRelationalEntity();
-        entity.id = randomUUID();
-        entity.createdAt = new Date();
-        entity.updatedAt = new Date();
-        entity.deletedAt = null;
-
-        const userEntity = new UserRelationalEntity();
-        userEntity.id = randomUUID();
-        userEntity.email = faker.internet.email();
-        userEntity.createdAt = new Date();
-        userEntity.updatedAt = new Date();
-        userEntity.deletedAt = null;
-        entity.user = userEntity;
-
-        const organizationEntity = new OrganizationRelationalEntity();
-        organizationEntity.id = randomUUID();
-        organizationEntity.type = ORGANIZATION_TYPES.SINGLE;
-        organizationEntity.createdAt = new Date();
-        organizationEntity.updatedAt = new Date();
-        organizationEntity.deletedAt = null;
-
-        const createdByEntity = new UserRelationalEntity();
-        createdByEntity.id = randomUUID();
-        createdByEntity.email = faker.internet.email();
-        createdByEntity.createdAt = new Date();
-        createdByEntity.updatedAt = new Date();
-        createdByEntity.deletedAt = null;
-        organizationEntity.createdBy = createdByEntity;
-        entity.organization = organizationEntity;
-
-        return entity;
-      }),
-    };
   });
 
   it('should be defined', () => {
@@ -125,23 +86,7 @@ describe('OrganizationMembershipRelationalRepository', () => {
     const membership = new Membership(user, organization);
 
     await organizationMembershipRelationRepository.create(membership);
-    expect(typeORMRepository.manager.save).toHaveBeenCalledWith(
-      expect.any(OrganizationMembershipRelationalEntity),
-    );
-  });
-
-  it('should save organization membership with entity manager', async () => {
-    const user = new UserEntityBuilder()
-      .withEmail(faker.internet.email())
-      .build();
-    const organization = new Organization(ORGANIZATION_TYPES.SINGLE);
-    const membership = new Membership(user, organization);
-
-    await organizationMembershipRelationRepository.create(
-      membership,
-      entityManager,
-    );
-    expect(entityManager.save).toHaveBeenCalledWith(
+    expect(typeORMRepository.save).toHaveBeenCalledWith(
       expect.any(OrganizationMembershipRelationalEntity),
     );
   });

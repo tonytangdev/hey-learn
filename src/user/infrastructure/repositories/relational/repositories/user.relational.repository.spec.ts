@@ -33,17 +33,15 @@ describe('UserRelationalRepository', () => {
               newUser.deletedAt = null;
               return newUser;
             }),
-            manager: {
-              save: jest.fn(() => {
-                const newUser = new UserRelationalEntity();
-                newUser.id = randomUUID();
-                newUser.email = faker.internet.email();
-                newUser.createdAt = new Date();
-                newUser.updatedAt = new Date();
-                newUser.deletedAt = null;
-                return newUser;
-              }),
-            },
+            save: jest.fn(() => {
+              const newUser = new UserRelationalEntity();
+              newUser.id = randomUUID();
+              newUser.email = faker.internet.email();
+              newUser.createdAt = new Date();
+              newUser.updatedAt = new Date();
+              newUser.deletedAt = null;
+              return newUser;
+            }),
           },
         },
       ],
@@ -66,29 +64,9 @@ describe('UserRelationalRepository', () => {
       .withEmail(faker.internet.email())
       .build();
     const newUser = await userRelationalRepository.createUser(user);
-    expect(typeORMRepository.manager.save).toHaveBeenCalledWith(
+    expect(typeORMRepository.save).toHaveBeenCalledWith(
       expect.any(UserRelationalEntity),
     );
-    expect(newUser).toBeInstanceOf(User);
-  });
-
-  it('should create a user with the entity manager', async () => {
-    const user = new UserEntityBuilder()
-      .withEmail(faker.internet.email())
-      .build();
-    const em = {
-      save: jest.fn(() => {
-        const newUser = new UserRelationalEntity();
-        newUser.id = randomUUID();
-        newUser.email = faker.internet.email();
-        newUser.createdAt = new Date();
-        newUser.updatedAt = new Date();
-        newUser.deletedAt = null;
-        return newUser;
-      }),
-    };
-    const newUser = await userRelationalRepository.createUser(user, em as any);
-    expect(em.save).toHaveBeenCalledWith(expect.any(UserRelationalEntity));
     expect(newUser).toBeInstanceOf(User);
   });
 

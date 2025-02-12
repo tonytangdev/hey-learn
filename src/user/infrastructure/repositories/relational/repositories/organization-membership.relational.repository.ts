@@ -15,12 +15,11 @@ export class OrganizationMembershipRelationalRepository
     private readonly organizationMembershipRepository: Repository<OrganizationMembershipRelationalEntity>,
   ) {}
 
-  async create(membership: Membership, context?: any): Promise<Membership> {
-    const em = context ?? this.organizationMembershipRepository.manager;
+  async create(membership: Membership): Promise<Membership> {
     const membershipEntity =
       OrganizationMembershipMapper.toPersistence(membership);
-
-    const result = await em.save(membershipEntity);
+    const result =
+      await this.organizationMembershipRepository.save(membershipEntity);
     return OrganizationMembershipMapper.toDomain(result);
   }
 }

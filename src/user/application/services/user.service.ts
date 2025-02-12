@@ -40,15 +40,22 @@ export class UserService {
     userAggregate.createDefaultOrganization();
 
     try {
-      await this.transactionManager.execute(async (context) => {
-        await this.userRepository.createUser(userAggregate.getUser());
-        await this.organizationRepository.create(
-          userAggregate.getDefaultOrganization(),
-          context,
+      await this.transactionManager.execute(async (transaction) => {
+        const userRepository = transaction.getRepository(this.userRepository);
+        await userRepository.createUser(userAggregate.getUser());
+
+        const organizationRepository = transaction.getRepository(
+          this.organizationRepository,
         );
-        await this.organizationMembershipRepo.create(
+        await organizationRepository.create(
+          userAggregate.getDefaultOrganization(),
+        );
+
+        const organizationMembershipRepo = transaction.getRepository(
+          this.organizationMembershipRepo,
+        );
+        await organizationMembershipRepo.create(
           userAggregate.getDefaultOrganizationMembership(),
-          context,
         );
       });
     } catch (error) {

@@ -1,5 +1,7 @@
+import { Transaction } from './transaction';
+
 export const TRANSACTION_MANAGER = Symbol('TRANSACTION_MANAGER');
 
 export interface TransactionManager {
-  execute(transactionFunction: (context: any) => Promise<void>): Promise<void>;
+  execute<T>(operation: (transaction: Transaction) => Promise<T>): Promise<T>;
 }

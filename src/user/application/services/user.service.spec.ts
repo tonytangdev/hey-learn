@@ -23,6 +23,7 @@ import {
 import { Organization } from '../../../user/domain/entities/organization.entity';
 import { Membership } from '../../../user/domain/entities/membership.entity';
 import { UserEntityBuilder } from '../../../user/domain/entities-builders/user.entity-builder';
+import { Transaction } from 'src/shared/interfaces/transaction';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -30,7 +31,6 @@ describe('UserService', () => {
   let organizationRepository: OrganizationRepository;
   let organizationMembershipRepository: OrganizationMembershipRepository;
   let transactionManager: TransactionManager;
-  const context: any = {};
   let eventEmitter: EventEmitter;
 
   beforeEach(async () => {
@@ -59,7 +59,7 @@ describe('UserService', () => {
         {
           provide: TRANSACTION_MANAGER,
           useValue: {
-            execute: jest.fn((fn: (context: any) => void) => fn(context)),
+            execute: jest.fn(),
           },
         },
         {
@@ -80,9 +80,24 @@ describe('UserService', () => {
       );
     transactionManager = moduleRef.get<TransactionManager>(TRANSACTION_MANAGER);
     eventEmitter = moduleRef.get<EventEmitter>(EVENT_EMITTER);
+
+    jest.clearAllMocks();
   });
 
   it('should create a user', async () => {
+    const transaction: Transaction = {
+      getRepository: jest
+        .fn()
+        .mockImplementationOnce(() => userRepository)
+        .mockImplementationOnce(() => organizationRepository)
+        .mockImplementationOnce(() => organizationMembershipRepository),
+    };
+    (transactionManager.execute as jest.Mock).mockImplementationOnce(
+      async (operation: (transaction: Transaction) => Promise<void>) => {
+        await operation(transaction);
+      },
+    );
+
     const newUser = new CreateUserDTO();
     newUser.email = faker.internet.email();
 
@@ -95,21 +110,41 @@ describe('UserService', () => {
   });
 
   it('should create the default organization and membership for the user', async () => {
+    const transaction: Transaction = {
+      getRepository: jest
+        .fn()
+        .mockImplementationOnce(() => userRepository)
+        .mockImplementationOnce(() => organizationRepository)
+        .mockImplementationOnce(() => organizationMembershipRepository),
+    };
+    (transactionManager.execute as jest.Mock).mockImplementationOnce(
+      async (operation: (transaction: Transaction) => Promise<void>) => {
+        await operation(transaction);
+      },
+    );
+
     const newUser = new CreateUserDTO();
     newUser.email = faker.internet.email();
     await userService.createUser(newUser);
     expect(transactionManager.execute).toHaveBeenCalled();
     expect(organizationRepository.create).toHaveBeenCalledWith(
       expect.any(Organization),
-      context,
     );
     expect(organizationMembershipRepository.create).toHaveBeenCalledWith(
       expect.any(Membership),
-      context,
     );
   });
 
   it('should throw an error if user creation fails', async () => {
+    const transaction: Transaction = {
+      getRepository: jest.fn().mockImplementationOnce(() => userRepository),
+    };
+    (transactionManager.execute as jest.Mock).mockImplementationOnce(
+      async (operation: (transaction: Transaction) => Promise<void>) => {
+        await operation(transaction);
+      },
+    );
+
     const newUser = new CreateUserDTO();
     newUser.email = faker.internet.email();
     (userRepository.createUser as jest.Mock).mockRejectedValueOnce(new Error());
