@@ -1,5 +1,3 @@
-import { User } from './user.entity';
-import { Email } from '../value-objects/email.value-object';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { UserEntityBuilder } from '../entities-builders/user.entity-builder';
