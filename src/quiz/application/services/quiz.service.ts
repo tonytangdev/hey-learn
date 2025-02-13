@@ -13,6 +13,9 @@ import { CreateQuizError } from '../errors/create-quiz.error';
 import { Organization } from '../../domain/entities/organization.entity';
 import { Question } from '../../domain/entities/question.entity';
 import { Answer } from '../../domain/entities/answer.entity';
+import { OrganizationMembershipRepository } from '../repositories/organization-membership.repository';
+import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
+import { OrganizationMembership } from '../../domain/entities/organization-membership.entity';
 
 @Injectable()
 export class QuizService {
@@ -22,16 +25,22 @@ export class QuizService {
     private readonly questionRepository: QuestionRepository,
     private readonly answerRepository: AnswerRepository,
     private readonly organizationRepository: OrganizationRepository,
+    private readonly organizationMembershipRepository: OrganizationMembershipRepository,
 
     @Inject(TRANSACTION_MANAGER)
     private readonly transactionManager: TransactionManager,
   ) {}
 
   async createQuiz(dto: CreateQuizDTO) {
-    const { question, answer, wrongAnswers, category, organizationId } = dto;
+    const { question, answer, wrongAnswers, category, organizationId, userId } =
+      dto;
 
     if (await this.organizationNotFound(organizationId)) {
       throw new OrganizationNotFoundError(organizationId);
+    }
+
+    if (await this.userIsNotMemberOfOrganization(organizationId, userId)) {
+      throw new UserNotMemberOfOrganizationError();
     }
 
     const { quizQuestion, propositions } = this.prepareQuizData(
@@ -51,10 +60,23 @@ export class QuizService {
     }
   }
 
-  private async organizationNotFound(organizationId: string) {
+  private async organizationNotFound(organizationId: Organization['id']) {
     const organization =
       await this.organizationRepository.findById(organizationId);
     return !organization;
+  }
+
+  private async userIsNotMemberOfOrganization(
+    organizationId: OrganizationMembership['organizationId'],
+    userId: OrganizationMembership['userId'],
+  ) {
+    const membership =
+      await this.organizationMembershipRepository.findByOrganizationIdAndUserId(
+        organizationId,
+        userId,
+      );
+
+    return !membership;
   }
 
   private prepareQuizData(
