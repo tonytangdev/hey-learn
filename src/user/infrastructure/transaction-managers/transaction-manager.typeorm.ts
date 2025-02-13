@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TransactionManager } from '../../../shared/interfaces/transaction-manager';
 import { DataSource } from 'typeorm';
-import { Transaction } from 'src/shared/interfaces/transaction';
+import { Transaction } from '../../../shared/interfaces/transaction';
 import { TransactionTypeORM } from './transaction.typeorm';
 
 @Injectable()

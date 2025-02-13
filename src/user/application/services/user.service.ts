@@ -14,9 +14,9 @@ import {
   TRANSACTION_MANAGER,
   TransactionManager,
 } from '../../../shared/interfaces/transaction-manager';
-import { User } from 'src/user/domain/entities/user.entity';
-import { Organization } from 'src/user/domain/entities/organization.entity';
-import { Membership } from 'src/user/domain/entities/membership.entity';
+import { User } from '../../domain/entities/user.entity';
+import { Organization } from '../../domain/entities/organization.entity';
+import { Membership } from '../../domain/entities/membership.entity';
 import { USER_CREATED_DOMAIN_EVENT } from '../events/user-created.event';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class UserService {
   ) {}
 
   async createUser(dto: CreateUserDTO): Promise<void> {
-    if (await this.userExists()) {
+    if (await this.userExists(dto.email)) {
       throw new UserAlreadyExists(dto.email);
     }
 
@@ -53,8 +53,8 @@ export class UserService {
     await this.emitDomainEvents(domainEvents);
   }
 
-  private async userExists(): Promise<boolean> {
-    const user = await this.userRepository.findByEmail('admin@admin.com');
+  private async userExists(email: string): Promise<boolean> {
+    const user = await this.userRepository.findByEmail(email);
     return !!user;
   }
 

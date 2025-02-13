@@ -1,4 +1,4 @@
-import { Repository } from 'src/shared/interfaces/repository';
+import { Repository } from '../../../shared/interfaces/repository';
 import { User } from '../../domain/entities/user.entity';
 
 export abstract class UserRepository implements Repository {

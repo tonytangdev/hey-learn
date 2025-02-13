@@ -10,6 +10,9 @@ import {
   TransactionManager,
 } from '../../../shared/interfaces/transaction-manager';
 import { CreateQuizError } from '../errors/create-quiz.error';
+import { Organization } from '../../domain/entities/organization.entity';
+import { Question } from '../../domain/entities/question.entity';
+import { Answer } from '../../domain/entities/answer.entity';
 
 @Injectable()
 export class QuizService {
@@ -27,14 +30,11 @@ export class QuizService {
   async createQuiz(dto: CreateQuizDTO) {
     const { question, answer, wrongAnswers, category, organizationId } = dto;
 
-    const organization =
-      await this.organizationRepository.findById(organizationId);
-
-    if (!organization) {
+    if (await this.organizationNotFound(organizationId)) {
       throw new OrganizationNotFoundError(organizationId);
     }
 
-    const questionAgg = QuestionAggregate.create(
+    const { quizQuestion, propositions } = this.prepareQuizData(
       question,
       answer,
       wrongAnswers,
@@ -43,26 +43,56 @@ export class QuizService {
     );
 
     try {
-      await this.transactionManager.execute(async (transaction) => {
-        const questionRepository = transaction.getRepository(
-          this.questionRepository,
-        );
-        await questionRepository.save(questionAgg.getQuestion());
-
-        const answerRepository = transaction.getRepository(
-          this.answerRepository,
-        );
-
-        await Promise.all(
-          questionAgg.getPropositions().map(async (proposition) => {
-            await answerRepository.save(proposition);
-          }),
-        );
-      });
+      await this.saveDataInDatabase(quizQuestion, propositions);
     } catch (error) {
       this.logger.error(error);
       this.logger.error({ dto });
       throw new CreateQuizError();
     }
+  }
+
+  private async organizationNotFound(organizationId: string) {
+    const organization =
+      await this.organizationRepository.findById(organizationId);
+    return !organization;
+  }
+
+  private prepareQuizData(
+    question: string,
+    answer: string,
+    wrongAnswers: string[],
+    organizationId: Organization['id'],
+    category?: string,
+  ) {
+    const questionAgg = QuestionAggregate.create(
+      question,
+      answer,
+      wrongAnswers,
+      organizationId,
+      category,
+    );
+
+    return {
+      quizQuestion: questionAgg.getQuestion(),
+      propositions: questionAgg.getPropositions(),
+      organizationId,
+    };
+  }
+
+  private async saveDataInDatabase(question: Question, propositions: Answer[]) {
+    await this.transactionManager.execute(async (transaction) => {
+      const questionRepository = transaction.getRepository(
+        this.questionRepository,
+      );
+      await questionRepository.save(question);
+
+      const answerRepository = transaction.getRepository(this.answerRepository);
+
+      await Promise.all(
+        propositions.map(async (proposition) => {
+          await answerRepository.save(proposition);
+        }),
+      );
+    });
   }
 }

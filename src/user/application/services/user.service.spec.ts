@@ -23,7 +23,7 @@ import {
 import { Organization } from '../../../user/domain/entities/organization.entity';
 import { Membership } from '../../../user/domain/entities/membership.entity';
 import { UserEntityBuilder } from '../../../user/domain/entities-builders/user.entity-builder';
-import { Transaction } from 'src/shared/interfaces/transaction';
+import { Transaction } from '../../../shared/interfaces/transaction';
 
 describe('UserService', () => {
   let userService: UserService;

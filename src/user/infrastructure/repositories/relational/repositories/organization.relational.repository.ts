@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OrganizationRepository } from 'src/user/application/repositories/organization.repository';
-import { Organization } from 'src/user/domain/entities/organization.entity';
+import { OrganizationRepository } from '../../../../application/repositories/organization.repository';
+import { Organization } from '../../../../domain/entities/organization.entity';
 import { Repository } from 'typeorm';
 import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { OrganizationMapper } from '../mappers/organization.mapper';
