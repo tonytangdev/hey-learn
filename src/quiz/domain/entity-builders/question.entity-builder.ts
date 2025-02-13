@@ -38,7 +38,7 @@ export class QuestionEntityBuilder {
     return this;
   }
 
-  withOrganizationId(organizationId: string) {
+  withOrganizationId(organizationId: Organization['id']) {
     this.organizationId = organizationId;
     return this;
   }
