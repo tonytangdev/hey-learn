@@ -35,13 +35,13 @@ describe('CreateQuizCommandHandler', () => {
     const error = new Error('Test error');
     (quizService.createQuiz as jest.Mock).mockRejectedValue(error);
 
-    await expect(handler.execute(createQuizDTO)).rejects.toThrow(error);
+    await expect(handler.handle(createQuizDTO)).rejects.toThrow(error);
   });
 
   it('should call quizService.createQuiz with the correct parameters', async () => {
     const createQuizDTO = new CreateQuizDTO();
 
-    await handler.execute(createQuizDTO);
+    await handler.handle(createQuizDTO);
     expect(quizService.createQuiz).toHaveBeenCalledWith(createQuizDTO);
   });
 });

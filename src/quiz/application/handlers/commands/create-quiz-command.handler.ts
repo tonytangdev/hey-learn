@@ -6,7 +6,7 @@ import { CreateQuizDTO } from '../../dtos/create-quiz.dto';
 export class CreateQuizCommandHandler {
   constructor(private readonly quizService: QuizService) {}
 
-  async execute(dto: CreateQuizDTO): Promise<void> {
+  async handle(dto: CreateQuizDTO): Promise<void> {
     await this.quizService.createQuiz(dto);
   }
 }
