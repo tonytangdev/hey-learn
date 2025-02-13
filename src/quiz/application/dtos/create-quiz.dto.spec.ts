@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { QuizDTO } from './quiz.dto';
+import { CreateQuizDTO } from './create-quiz.dto';
 import { ValidationPipe } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 
 describe('QuizDTO', () => {
   it('should throw an error if question is empty', async () => {
-    const quizDTO = new QuizDTO();
+    const quizDTO = new CreateQuizDTO();
     quizDTO.question = '';
 
     const validationPipe = new ValidationPipe();
@@ -13,26 +13,26 @@ describe('QuizDTO', () => {
     await expect(
       validationPipe.transform(quizDTO, {
         type: 'body',
-        metatype: QuizDTO,
+        metatype: CreateQuizDTO,
       }),
     ).rejects.toThrow();
   });
 
   it('should throw an error if answer is empty', async () => {
-    const quizDTO = new QuizDTO();
+    const quizDTO = new CreateQuizDTO();
     quizDTO.question = faker.lorem.sentence();
     quizDTO.answer = '';
     const validationPipe = new ValidationPipe();
     await expect(
       validationPipe.transform(quizDTO, {
         type: 'body',
-        metatype: QuizDTO,
+        metatype: CreateQuizDTO,
       }),
     ).rejects.toThrow();
   });
 
   it('should throw an error if there are no wrong answers', async () => {
-    const quizDTO = new QuizDTO();
+    const quizDTO = new CreateQuizDTO();
     quizDTO.question = faker.lorem.sentence();
     quizDTO.answer = faker.lorem.sentence();
     quizDTO.wrongAnswers = [];
@@ -40,13 +40,13 @@ describe('QuizDTO', () => {
     await expect(
       validationPipe.transform(quizDTO, {
         type: 'body',
-        metatype: QuizDTO,
+        metatype: CreateQuizDTO,
       }),
     ).rejects.toThrow();
   });
 
   it('should throw an error if there is no organization', async () => {
-    const quizDTO = new QuizDTO();
+    const quizDTO = new CreateQuizDTO();
     quizDTO.question = faker.lorem.sentence();
     quizDTO.answer = faker.lorem.sentence();
     quizDTO.wrongAnswers = [faker.lorem.sentence()];
@@ -54,7 +54,7 @@ describe('QuizDTO', () => {
     await expect(
       validationPipe.transform(quizDTO, {
         type: 'body',
-        metatype: QuizDTO,
+        metatype: CreateQuizDTO,
       }),
     ).rejects.toThrow();
   });
@@ -74,7 +74,7 @@ describe('QuizDTO', () => {
       category: faker.lorem.sentence(),
     },
   ])('should not throw an error if all fields are valid', async () => {
-    const quizDTO = new QuizDTO();
+    const quizDTO = new CreateQuizDTO();
     quizDTO.question = faker.lorem.sentence();
     quizDTO.answer = faker.lorem.sentence();
     quizDTO.wrongAnswers = [faker.lorem.sentence()];
@@ -86,7 +86,7 @@ describe('QuizDTO', () => {
     await expect(
       validationPipe.transform(quizDTO, {
         type: 'body',
-        metatype: QuizDTO,
+        metatype: CreateQuizDTO,
       }),
     ).resolves.not.toThrow();
   });

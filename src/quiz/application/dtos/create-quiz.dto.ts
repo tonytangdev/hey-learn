@@ -6,7 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class QuizDTO {
+export class CreateQuizDTO {
   @IsString()
   @IsNotEmpty()
   question: string;
