@@ -80,6 +80,7 @@ describe('QuizDTO', () => {
     quizDTO.wrongAnswers = [faker.lorem.sentence()];
     quizDTO.organizationId = randomUUID();
     quizDTO.category = faker.lorem.sentence();
+    quizDTO.userId = randomUUID();
 
     const validationPipe = new ValidationPipe();
 
