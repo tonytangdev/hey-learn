@@ -5,6 +5,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     EventEmitterModule.forRoot(),
     UserModule,
+    QuizModule,
   ],
   controllers: [AppController],
   providers: [AppService],
