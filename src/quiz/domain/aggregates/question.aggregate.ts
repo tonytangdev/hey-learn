@@ -7,16 +7,19 @@ export class QuestionAggregate {
 
   static create(
     questionText: string,
-    category: string,
     answer: string,
     wrongAnswers: string[],
     organizationId: Organization['id'],
+    category?: string,
   ) {
     const questionBuilder = new QuestionEntityBuilder()
       .withQuestion(questionText)
-      .withCategory(category)
       .withAnswer(answer)
       .withOrganizationId(organizationId);
+
+    if (category) {
+      questionBuilder.withCategory(category);
+    }
     wrongAnswers.forEach((wrongAnswer) =>
       questionBuilder.addWrongAnswer(wrongAnswer),
     );

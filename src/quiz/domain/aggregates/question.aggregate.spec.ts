@@ -27,10 +27,10 @@ describe('Question Aggregate', () => {
   it('should create a question', () => {
     const questionAgg = QuestionAggregate.create(
       questionText,
-      category,
       answer,
       [wrongAnswer],
       organizationId,
+      category,
     );
 
     expect(questionAgg).toBeInstanceOf(QuestionAggregate);
