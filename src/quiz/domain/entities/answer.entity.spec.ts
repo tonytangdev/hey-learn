@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 import { Answer } from './answer.entity';
 import { randomUUID } from 'node:crypto';
 import { MissingAnswerError } from '../errors/missing-answer-value.error';
