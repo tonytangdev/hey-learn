@@ -5,12 +5,15 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { OrganizationRelationalEntity } from './organization.relational-entity';
 import { UserRelationalEntity } from './user.relational-entity';
 
 @Entity({ name: 'membership' })
+// Ensure that a user can only be a member of an organization once
+@Unique(['user', 'organization'])
 export class OrganizationMembershipRelationalEntity {
   @PrimaryColumn()
   id: string;
