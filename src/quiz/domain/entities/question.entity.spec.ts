@@ -103,4 +103,20 @@ describe('Question', () => {
       new Question(text, organization, propositions[0], propositions);
     }).toThrow(new MissingQuestionPropositionsError());
   });
+
+  it('should get the answer', () => {
+    const text = faker.lorem.sentence();
+    const organization = new Organization(randomUUID());
+    const propositions = Array.from(
+      { length: 4 },
+      () => new Answer(faker.lorem.sentence()),
+    );
+    const question = new Question(
+      text,
+      organization,
+      propositions[0],
+      propositions,
+    );
+    expect(question.getAnswer()).toBe(propositions[0].value);
+  });
 });

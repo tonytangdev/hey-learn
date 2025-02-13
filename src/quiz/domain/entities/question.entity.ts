@@ -30,4 +30,8 @@ export class Question {
 
     this.value = trimmedValue;
   }
+
+  getAnswer() {
+    return this.answer.value;
+  }
 }
