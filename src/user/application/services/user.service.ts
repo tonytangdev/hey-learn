@@ -14,6 +14,10 @@ import {
   TRANSACTION_MANAGER,
   TransactionManager,
 } from '../../../shared/interfaces/transaction-manager';
+import { User } from 'src/user/domain/entities/user.entity';
+import { Organization } from 'src/user/domain/entities/organization.entity';
+import { Membership } from 'src/user/domain/entities/membership.entity';
+import { USER_CREATED_DOMAIN_EVENT } from '../events/user-created.event';
 
 @Injectable()
 export class UserService {
@@ -31,45 +35,67 @@ export class UserService {
   ) {}
 
   async createUser(dto: CreateUserDTO): Promise<void> {
-    const existingUser = await this.userRepository.findByEmail(dto.email);
-    if (existingUser) {
+    if (await this.userExists()) {
       throw new UserAlreadyExists(dto.email);
     }
 
-    const userAggregate = UserAggregate.createUser(dto.email);
-    userAggregate.createDefaultOrganization();
+    const { user, organization, membership, domainEvents } =
+      this.prepareUserAndItsDefaultOrganization(dto.email);
 
     try {
-      await this.transactionManager.execute(async (transaction) => {
-        const userRepository = transaction.getRepository(this.userRepository);
-        await userRepository.createUser(userAggregate.getUser());
-
-        const organizationRepository = transaction.getRepository(
-          this.organizationRepository,
-        );
-        await organizationRepository.create(
-          userAggregate.getDefaultOrganization(),
-        );
-
-        const organizationMembershipRepo = transaction.getRepository(
-          this.organizationMembershipRepo,
-        );
-        await organizationMembershipRepo.create(
-          userAggregate.getDefaultOrganizationMembership(),
-        );
-      });
+      await this.saveDataInDatabase(user, organization, membership);
     } catch (error) {
       this.logger.error(`Failed to create user: ${error}`);
       this.logger.error({ dto });
       throw new CreateUserError();
     }
 
+    await this.emitDomainEvents(domainEvents);
+  }
+
+  private async userExists(): Promise<boolean> {
+    const user = await this.userRepository.findByEmail('admin@admin.com');
+    return !!user;
+  }
+
+  private prepareUserAndItsDefaultOrganization(email: string) {
+    const userAggregate = UserAggregate.createUser(email);
+    userAggregate.createDefaultOrganization();
+
+    return {
+      user: userAggregate.getUser(),
+      organization: userAggregate.getDefaultOrganization(),
+      membership: userAggregate.getDefaultOrganizationMembership(),
+      domainEvents: userAggregate.getDomainEvents(),
+    };
+  }
+
+  private async saveDataInDatabase(
+    user: User,
+    organization: Organization,
+    membership: Membership,
+  ) {
+    await this.transactionManager.execute(async (transaction) => {
+      const userRepository = transaction.getRepository(this.userRepository);
+      await userRepository.createUser(user);
+
+      const organizationRepository = transaction.getRepository(
+        this.organizationRepository,
+      );
+      await organizationRepository.create(organization);
+
+      const organizationMembershipRepo = transaction.getRepository(
+        this.organizationMembershipRepo,
+      );
+      await organizationMembershipRepo.create(membership);
+    });
+  }
+
+  private async emitDomainEvents(domainEvents: USER_CREATED_DOMAIN_EVENT[]) {
     await Promise.all(
-      userAggregate
-        .getDomainEvents()
-        .map(
-          async (event) => await this.eventEmitter.emit(event.name, event.data),
-        ),
+      domainEvents.map(
+        async (event) => await this.eventEmitter.emit(event.name, event.data),
+      ),
     );
   }
 }
