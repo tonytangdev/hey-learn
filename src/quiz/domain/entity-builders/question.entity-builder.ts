@@ -33,7 +33,7 @@ export class QuestionEntityBuilder {
     return this;
   }
 
-  withQuestion(value: string) {
+  withValue(value: string) {
     this.value = value;
     return this;
   }

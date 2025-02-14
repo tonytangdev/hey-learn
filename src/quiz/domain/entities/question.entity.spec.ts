@@ -5,6 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { Answer } from './answer.entity';
 import { MissingQuestionValueError } from '../errors/missing-question-value.error';
 import { MissingQuestionPropositionsError } from '../errors/missing-question-propositions.error';
+import { QuestionEntityBuilder } from '../entity-builders/question.entity-builder';
 
 describe('Question', () => {
   it.each([
@@ -55,28 +56,48 @@ describe('Question', () => {
     ({ category, id, createdAt, updatedAt, deletedAt }) => {
       const text = faker.lorem.sentence();
       const organization = new Organization(randomUUID());
-      const propositions = Array.from(
+      const wrongAnswers = Array.from(
         { length: 4 },
         () => new Answer(faker.lorem.sentence()),
       );
-      const question = new Question(
-        text,
-        organization,
-        propositions[0],
-        propositions,
-        category,
-        id,
-        createdAt,
-        updatedAt,
-        deletedAt,
-      );
+
+      const questionBuilder = new QuestionEntityBuilder()
+        .withValue(text)
+        .withOrganizationId(organization.id)
+        .withAnswer(wrongAnswers[0].value);
+
+      wrongAnswers.forEach((proposition) => {
+        questionBuilder.addWrongAnswer(proposition.value);
+      });
+
+      if (category) {
+        questionBuilder.withCategory(category);
+      }
+
+      if (id) {
+        questionBuilder.withId(id);
+      }
+
+      if (createdAt) {
+        questionBuilder.withCreatedAt(createdAt);
+      }
+
+      if (updatedAt) {
+        questionBuilder.withUpdatedAt(updatedAt);
+      }
+
+      if (deletedAt) {
+        questionBuilder.withDeletedAt(deletedAt);
+      }
+
+      const question = questionBuilder.build();
 
       expect(question).toBeInstanceOf(Question);
       expect(question.value).toBe(text);
-      expect(question.organization).toBe(organization);
-      expect(question.propositions).toEqual(propositions);
-      expect(question.answer).toBe(propositions[0]);
-      expect(question.category);
+      expect(question.organization.id).toBe(organization.id);
+      expect(question.propositions.length).toEqual(wrongAnswers.length + 1);
+      expect(question.answer).toBeInstanceOf(Answer);
+      expect(question.category).toEqual(category);
     },
   );
 

@@ -13,13 +13,14 @@ export class QuestionAggregate {
     category?: string,
   ) {
     const questionBuilder = new QuestionEntityBuilder()
-      .withQuestion(questionText)
+      .withValue(questionText)
       .withAnswer(answer)
       .withOrganizationId(organizationId);
 
     if (category) {
       questionBuilder.withCategory(category);
     }
+
     wrongAnswers.forEach((wrongAnswer) =>
       questionBuilder.addWrongAnswer(wrongAnswer),
     );

@@ -12,7 +12,7 @@ describe('Question Aggregate', () => {
 
   it('should initialize', () => {
     const question = new QuestionEntityBuilder()
-      .withQuestion(questionText)
+      .withValue(questionText)
       .withAnswer(answer)
       .addWrongAnswer(wrongAnswer)
       .withOrganizationId(organizationId)

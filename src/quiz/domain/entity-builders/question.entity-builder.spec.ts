@@ -73,7 +73,7 @@ describe('Question Entity Builder', () => {
 
       questionBuilder
         .withAnswer(answer)
-        .withQuestion(questionText)
+        .withValue(questionText)
         .withOrganizationId(organizationId)
         .withCreatedAt(createdAt)
         .withUpdatedAt(updatedAt);
@@ -98,7 +98,7 @@ describe('Question Entity Builder', () => {
   it('should throw an error if the question is empty', () => {
     const questionBuilder = new QuestionEntityBuilder()
       .withOrganizationId(randomUUID())
-      .withQuestion('     ')
+      .withValue('     ')
       .withAnswer('answer');
 
     expect(() => questionBuilder.build()).toThrow(
@@ -109,7 +109,7 @@ describe('Question Entity Builder', () => {
   it('should throw an error if the answer is empty', () => {
     const questionBuilder = new QuestionEntityBuilder()
       .withOrganizationId(randomUUID())
-      .withQuestion('question')
+      .withValue('question')
       .withAnswer('     ');
     expect(() => questionBuilder.build()).toThrow(new MissingAnswerError());
   });
@@ -117,7 +117,7 @@ describe('Question Entity Builder', () => {
   it('should an error if the number of propositions is less than 2', () => {
     const questionBuilder = new QuestionEntityBuilder()
       .withOrganizationId(randomUUID())
-      .withQuestion(faker.lorem.sentence())
+      .withValue(faker.lorem.sentence())
       .withAnswer(faker.lorem.sentence());
 
     expect(() => questionBuilder.build()).toThrow(
