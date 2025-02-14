@@ -30,7 +30,7 @@ export class QuestionRelationalEntity {
   @Column()
   value: string;
 
-  @Column({ nullable: true })
+  @Column({ type: String, nullable: true })
   category: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

@@ -1,4 +1,3 @@
-import { Question } from '../../../../../domain/entities/question.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,14 +6,18 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { QuestionRelationalEntity } from './question.relational-entity';
 
 @Entity({ name: 'answer' })
 export class AnswerRelationalEntity {
   @PrimaryColumn()
   id: string;
 
-  @ManyToOne(() => Question, (question) => question.propositions)
-  question: Question;
+  @ManyToOne(
+    () => QuestionRelationalEntity,
+    (question) => question.propositions,
+  )
+  question: QuestionRelationalEntity;
 
   @Column()
   value: string;
