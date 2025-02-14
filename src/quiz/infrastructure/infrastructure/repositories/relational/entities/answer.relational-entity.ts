@@ -26,5 +26,5 @@ export class AnswerRelationalEntity {
   updatedAt: Date;
 
   @Column({ type: 'timestamp', name: 'deleted_at', nullable: true })
-  deletedAt: Date;
+  deletedAt: Date | null;
 }
