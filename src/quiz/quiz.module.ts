@@ -12,6 +12,8 @@ import { OrganizationRepository } from './application/repositories/organization.
 import { OrganizationRelationalRepository } from './infrastructure/infrastructure/repositories/relational/repositories/organization.relational.repository';
 import { QuestionRepository } from './application/repositories/question.repository';
 import { QuestionRelationalRepository } from './infrastructure/infrastructure/repositories/relational/repositories/question.relational.repository';
+import { OrganizationMembershipRepository } from './application/repositories/organization-membership.repository';
+import { OrganizationMembershipRelationalRepository } from './infrastructure/infrastructure/repositories/relational/repositories/organization-membership.relational.repository';
 
 @Module({
   controllers: [QuizController],
@@ -29,6 +31,10 @@ import { QuestionRelationalRepository } from './infrastructure/infrastructure/re
     {
       provide: QuestionRepository,
       useClass: QuestionRelationalRepository,
+    },
+    {
+      provide: OrganizationMembershipRepository,
+      useClass: OrganizationMembershipRelationalRepository,
     },
   ],
   imports: [
