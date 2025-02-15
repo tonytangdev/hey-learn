@@ -16,7 +16,7 @@ import { TRANSACTION_MANAGER } from '../shared/interfaces/transaction-manager';
 import { TransactionManagerTypeORM } from './infrastructure/transaction-managers/transaction-manager.typeorm';
 import { OrganizationRelationalEntity } from './infrastructure/repositories/relational/entities/organization.relational-entity';
 import { OrganizationMembershipRelationalEntity } from './infrastructure/repositories/relational/entities/organization-membership.relational-entity';
-import { OrganizationMembershipService } from './application/services/organization.service';
+import { OrganizationMembershipService } from './application/services/organization-membership.service';
 
 @Module({
   controllers: [UserController],

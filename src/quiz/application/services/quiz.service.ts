@@ -13,7 +13,7 @@ import { Question } from '../../domain/entities/question.entity';
 import { Answer } from '../../domain/entities/answer.entity';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
 import { Membership } from '../../../user/domain/entities/membership.entity';
-import { OrganizationMembershipService } from '../../../user/application/services/organization.service';
+import { OrganizationMembershipService } from '../../../user/application/services/organization-membership.service';
 
 @Injectable()
 export class QuizService {

@@ -13,7 +13,7 @@ import { Transaction } from '../../../shared/interfaces/transaction';
 import { CreateQuizError } from '../errors/create-quiz.error';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
 import { Membership } from 'src/user/domain/entities/membership.entity';
-import { OrganizationMembershipService } from '../../../user/application/services/organization.service';
+import { OrganizationMembershipService } from '../../../user/application/services/organization-membership.service';
 
 describe('Quiz service', () => {
   let quizService: QuizService;
