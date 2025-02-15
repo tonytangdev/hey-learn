@@ -5,10 +5,11 @@ import { OrganizationMembershipMapper } from '../mappers/organization-membership
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrganizationMembershipRelationalEntity } from '../entities/organization-membership.relational-entity';
 import { Repository } from 'typeorm';
+import { findByOrganizationIdAndUserId } from '../../../../../quiz/application/repositories/organization-membership.repository';
 
 @Injectable()
 export class OrganizationMembershipRelationalRepository
-  implements OrganizationMembershipRepository
+  implements OrganizationMembershipRepository, findByOrganizationIdAndUserId
 {
   constructor(
     @InjectRepository(OrganizationMembershipRelationalEntity)

@@ -12,7 +12,7 @@ import { Organization } from '../../domain/entities/organization.entity';
 import { Question } from '../../domain/entities/question.entity';
 import { Answer } from '../../domain/entities/answer.entity';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
-import { OrganizationMembership } from '../../domain/entities/organization-membership.entity';
+import { Membership } from '../../../user/domain/entities/membership.entity';
 import { OrganizationMembershipService } from '../../../user/application/services/organization.service';
 
 @Injectable()
@@ -55,8 +55,8 @@ export class QuizService {
   }
 
   private async userIsNotMemberOfOrganization(
-    organizationId: OrganizationMembership['organizationId'],
-    userId: OrganizationMembership['userId'],
+    organizationId: Membership['organization']['id'],
+    userId: Membership['user']['id'],
   ) {
     const membership =
       await this.organizationMembershipService.findByOrganizationIdAndUserId(
