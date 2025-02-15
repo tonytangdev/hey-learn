@@ -60,16 +60,14 @@ export class QuestionEntityBuilder {
 
   build() {
     const organization = new Organization(this.organizationId);
-    const propositions = this.wrongAnswers.map(
-      (wrongAnswer) => new Answer(wrongAnswer),
+    const answer = new Answer(this.answer, undefined, true);
+    const propositions = [answer].concat(
+      this.wrongAnswers.map((wrongAnswer) => new Answer(wrongAnswer)),
     );
-    const answer = new Answer(this.answer);
-    propositions.push(answer);
 
     const question = new Question(
       this.value,
       organization,
-      answer,
       propositions,
       this.category,
       this.id,

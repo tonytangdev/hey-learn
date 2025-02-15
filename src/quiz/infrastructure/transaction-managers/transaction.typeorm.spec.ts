@@ -2,8 +2,6 @@ import { EntityManager } from 'typeorm';
 import { TransactionTypeORM } from './transaction.typeorm';
 import { QuestionRelationalEntity } from '../repositories/relational/entities/question.relational-entity';
 import { QuestionRelationalRepository } from '../repositories/relational/repositories/question.relational.repository';
-import { AnswerRelationalEntity } from '../repositories/relational/entities/answer.relational-entity';
-import { AnswerRelationalRepository } from '../repositories/relational/repositories/answer.relational.repository';
 
 describe('TransactionTypeORM', () => {
   let mockEntityManager: jest.Mocked<EntityManager>;
@@ -34,27 +32,6 @@ describe('TransactionTypeORM', () => {
         QuestionRelationalEntity,
       );
       expect(result).toBeInstanceOf(QuestionRelationalRepository);
-    });
-
-    it('should return AnswerRelationalRepository with correct entity', () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const mockAnswerRepo = {} as any;
-      mockEntityManager.getRepository.mockImplementation((entity) => {
-        if (entity === AnswerRelationalEntity) return mockAnswerRepo;
-        return null as any;
-      });
-
-      const transaction = new TransactionTypeORM(mockEntityManager);
-      const dummyMembershipRepo = new AnswerRelationalRepository(
-        mockAnswerRepo,
-      );
-
-      const result = transaction.getRepository(dummyMembershipRepo);
-
-      expect(mockEntityManager.getRepository).toHaveBeenCalledWith(
-        AnswerRelationalEntity,
-      );
-      expect(result).toBeInstanceOf(AnswerRelationalRepository);
     });
 
     it('should throw an error for unknown repository type', () => {

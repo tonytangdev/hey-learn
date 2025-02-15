@@ -4,7 +4,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -19,9 +18,11 @@ export class AnswerRelationalEntity {
     () => QuestionRelationalEntity,
     (question) => question.propositions,
   )
-  @OneToOne(() => QuestionRelationalEntity, (question) => question.answer)
   @JoinColumn({ name: 'question_id' })
   question: QuestionRelationalEntity;
+
+  @Column({ name: 'is_correct' })
+  isCorrect: boolean;
 
   @Column()
   value: string;

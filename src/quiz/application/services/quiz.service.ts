@@ -1,6 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { QuestionRepository } from '../repositories/question.repository';
-import { AnswerRepository } from '../repositories/answer.repository';
 import { CreateQuizDTO } from '../dtos/create-quiz.dto';
 import { QuestionAggregate } from '../../domain/aggregates/question.aggregate';
 import {
@@ -20,7 +19,6 @@ export class QuizService {
 
   constructor(
     private readonly questionRepository: QuestionRepository,
-    private readonly answerRepository: AnswerRepository,
 
     private readonly organizationMembershipService: OrganizationMembershipService,
 

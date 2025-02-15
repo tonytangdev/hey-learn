@@ -84,7 +84,6 @@ describe('Question Entity Builder', () => {
       if (id) {
         expect(question.id).toBe(id);
       }
-      expect(question.answer.value).toBe(answer);
       expect(question.category).toBe(category);
       expect(question.value).toBe(questionText);
       expect(question.organization.id).toBe(organizationId);

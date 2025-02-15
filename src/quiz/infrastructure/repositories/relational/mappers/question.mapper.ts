@@ -11,18 +11,12 @@ export class QuestionMapper {
     return new Question(
       questionRelationalEntity.value,
       new Organization(questionRelationalEntity.organization.id),
-      new Answer(
-        questionRelationalEntity.answer.value,
-        questionRelationalEntity.answer.id,
-        questionRelationalEntity.answer.createdAt,
-        questionRelationalEntity.answer.updatedAt,
-        questionRelationalEntity.answer.deletedAt ?? undefined,
-      ),
       questionRelationalEntity.propositions.map(
         (propositionRelationalEntity) =>
           new Answer(
             propositionRelationalEntity.value,
             propositionRelationalEntity.id,
+            propositionRelationalEntity.isCorrect,
             propositionRelationalEntity.createdAt,
             propositionRelationalEntity.updatedAt,
             propositionRelationalEntity.deletedAt ?? undefined,
@@ -45,25 +39,18 @@ export class QuestionMapper {
     relational.deletedAt = question.deletedAt ?? null;
     relational.organizationId = question.organization.id;
 
-    const answerRelational = new AnswerRelationalEntity();
-    answerRelational.id = question.answer.id;
-    answerRelational.value = question.answer.value;
-    answerRelational.createdAt = question.answer.createdAt;
-    answerRelational.updatedAt = question.answer.updatedAt;
-    answerRelational.deletedAt = question.answer.deletedAt ?? null;
-    relational.answer = answerRelational;
+    const propositionsRelational = question.propositions.map((proposition) => {
+      const propositionRelational = new AnswerRelationalEntity();
+      propositionRelational.id = proposition.id;
+      propositionRelational.isCorrect = proposition.isCorrect;
+      propositionRelational.value = proposition.value;
+      propositionRelational.createdAt = proposition.createdAt;
+      propositionRelational.updatedAt = proposition.updatedAt;
+      propositionRelational.deletedAt = proposition.deletedAt ?? null;
+      return propositionRelational;
+    });
 
-    // const propositionsRelational = question.propositions.map((proposition) => {
-    //   const propositionRelational = new AnswerRelationalEntity();
-    //   propositionRelational.id = proposition.id;
-    //   propositionRelational.value = proposition.value;
-    //   propositionRelational.createdAt = proposition.createdAt;
-    //   propositionRelational.updatedAt = proposition.updatedAt;
-    //   propositionRelational.deletedAt = proposition.deletedAt ?? null;
-    //   return propositionRelational;
-    // });
-
-    // relational.propositions = propositionsRelational;
+    relational.propositions = propositionsRelational;
     return relational;
   }
 }

@@ -9,6 +9,7 @@ export class Answer {
   constructor(
     value: string,
     public readonly id: string = PREFIX + randomUUID(),
+    public readonly isCorrect: boolean = false,
     public readonly createdAt: Date = new Date(),
     public readonly updatedAt: Date = new Date(),
     public readonly deletedAt?: Date,

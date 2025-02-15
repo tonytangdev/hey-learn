@@ -96,7 +96,6 @@ describe('Question', () => {
       expect(question.value).toBe(text);
       expect(question.organization.id).toBe(organization.id);
       expect(question.propositions.length).toEqual(wrongAnswers.length + 1);
-      expect(question.answer).toBeInstanceOf(Answer);
       expect(question.category).toEqual(category);
     },
   );
@@ -109,7 +108,7 @@ describe('Question', () => {
       () => new Answer(faker.lorem.sentence()),
     );
     expect(() => {
-      new Question(text, organization, propositions[0], propositions);
+      new Question(text, organization, propositions);
     }).toThrow(new MissingQuestionValueError());
   });
 
@@ -121,7 +120,7 @@ describe('Question', () => {
       () => new Answer(faker.lorem.sentence()),
     );
     expect(() => {
-      new Question(text, organization, propositions[0], propositions);
+      new Question(text, organization, propositions);
     }).toThrow(new MissingQuestionPropositionsError());
   });
 
@@ -130,14 +129,9 @@ describe('Question', () => {
     const organization = new Organization(randomUUID());
     const propositions = Array.from(
       { length: 4 },
-      () => new Answer(faker.lorem.sentence()),
+      (_, i) => new Answer(faker.lorem.sentence(), undefined, i === 0),
     );
-    const question = new Question(
-      text,
-      organization,
-      propositions[0],
-      propositions,
-    );
+    const question = new Question(text, organization, propositions);
     expect(question.getAnswer()).toBe(propositions[0].value);
   });
 });

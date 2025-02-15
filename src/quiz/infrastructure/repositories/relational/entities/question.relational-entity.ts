@@ -4,8 +4,8 @@ import {
   Entity,
   Index,
   JoinColumn,
+  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -17,16 +17,15 @@ export class QuestionRelationalEntity {
   @PrimaryColumn()
   id: string;
 
-  @OneToOne(() => OrganizationRelationalEntity)
+  @ManyToOne(
+    () => OrganizationRelationalEntity,
+    (organization) => organization.id,
+  )
   @JoinColumn({ name: 'organization_id' })
   organization: OrganizationRelationalEntity;
 
   @Column({ name: 'organization_id' })
   organizationId: string;
-
-  @OneToOne(() => AnswerRelationalEntity)
-  @JoinColumn({ name: 'answer_id' })
-  answer: AnswerRelationalEntity;
 
   @OneToMany(() => AnswerRelationalEntity, (answer) => answer.question, {
     cascade: true,

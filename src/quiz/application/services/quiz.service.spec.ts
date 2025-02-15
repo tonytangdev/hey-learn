@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { AnswerRepository } from '../repositories/answer.repository';
 import { QuestionRepository } from '../repositories/question.repository';
 import { QuizService } from './quiz.service';
 import {
@@ -18,7 +17,6 @@ import { OrganizationMembershipService } from '../../../user/application/service
 describe('Quiz service', () => {
   let quizService: QuizService;
   let questionRepository: QuestionRepository;
-  let answersRepository: AnswerRepository;
   let organizationMembershipService: OrganizationMembershipService;
   let transactionManager: TransactionManager;
 
@@ -28,12 +26,6 @@ describe('Quiz service', () => {
         QuizService,
         {
           provide: QuestionRepository,
-          useValue: {
-            save: jest.fn(),
-          },
-        },
-        {
-          provide: AnswerRepository,
           useValue: {
             save: jest.fn(),
           },
@@ -55,7 +47,6 @@ describe('Quiz service', () => {
 
     quizService = moduleRef.get<QuizService>(QuizService);
     questionRepository = moduleRef.get<QuestionRepository>(QuestionRepository);
-    answersRepository = moduleRef.get<AnswerRepository>(AnswerRepository);
     organizationMembershipService =
       moduleRef.get<OrganizationMembershipService>(
         OrganizationMembershipService,
@@ -75,10 +66,7 @@ describe('Quiz service', () => {
     ).mockResolvedValue({} as unknown as Membership);
 
     const transaction: Transaction = {
-      getRepository: jest
-        .fn()
-        .mockImplementationOnce(() => questionRepository)
-        .mockImplementation(() => answersRepository),
+      getRepository: jest.fn().mockImplementationOnce(() => questionRepository),
     };
 
     (transactionManager.execute as jest.Mock).mockImplementationOnce(
@@ -108,41 +96,7 @@ describe('Quiz service', () => {
     ).mockResolvedValue({} as unknown as Membership);
 
     const transaction: Transaction = {
-      getRepository: jest
-        .fn()
-        .mockImplementationOnce(() => questionRepository)
-        .mockImplementation(() => answersRepository),
-    };
-    (transactionManager.execute as jest.Mock).mockImplementationOnce(
-      async (operation: (transaction: Transaction) => Promise<void>) => {
-        await operation(transaction);
-      },
-    );
-
-    const dto = new CreateQuizDTO();
-    dto.organizationId = randomUUID();
-    dto.question = faker.lorem.sentence();
-    dto.answer = faker.lorem.sentence();
-    dto.wrongAnswers = [faker.lorem.sentence(), faker.lorem.sentence()];
-
-    await expect(quizService.createQuiz(dto)).rejects.toThrow(
-      new CreateQuizError(),
-    );
-  });
-
-  it('should throw an error if answersRepository throws an error', async () => {
-    (answersRepository.save as jest.Mock).mockRejectedValue(
-      new Error('Test error'),
-    );
-    (
-      organizationMembershipService.findByOrganizationIdAndUserId as jest.Mock
-    ).mockResolvedValue({} as unknown as Membership);
-
-    const transaction: Transaction = {
-      getRepository: jest
-        .fn()
-        .mockImplementationOnce(() => questionRepository)
-        .mockImplementation(() => answersRepository),
+      getRepository: jest.fn().mockImplementationOnce(() => questionRepository),
     };
     (transactionManager.execute as jest.Mock).mockImplementationOnce(
       async (operation: (transaction: Transaction) => Promise<void>) => {

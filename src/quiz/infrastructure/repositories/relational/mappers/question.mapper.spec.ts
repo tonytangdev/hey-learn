@@ -109,7 +109,6 @@ describe('Question Mapper', () => {
       answerRelationalEntity.createdAt = answer.createdAt;
       answerRelationalEntity.updatedAt = answer.updatedAt;
       answerRelationalEntity.deletedAt = answer.deletedAt ?? null;
-      questionRelationalEntity.answer = answerRelationalEntity;
 
       const propositionsRelationalEntities = propositions.map(
         (proposition: {
@@ -138,17 +137,6 @@ describe('Question Mapper', () => {
       expect(question.updatedAt).toEqual(questionRelationalEntity.updatedAt);
       expect(question.deletedAt).toEqual(
         questionRelationalEntity.deletedAt ?? undefined,
-      );
-      expect(question.answer.id).toEqual(answerRelationalEntity.id);
-      expect(question.answer.value).toEqual(answerRelationalEntity.value);
-      expect(question.answer.createdAt).toEqual(
-        answerRelationalEntity.createdAt,
-      );
-      expect(question.answer.updatedAt).toEqual(
-        answerRelationalEntity.updatedAt,
-      );
-      expect(question.answer.deletedAt).toEqual(
-        answerRelationalEntity.deletedAt ?? undefined,
       );
       expect(question.propositions.length).toEqual(
         propositionsRelationalEntities.length,
@@ -181,7 +169,6 @@ describe('Question Mapper', () => {
     const question = new Question(
       faker.lorem.sentence(),
       organization,
-      answer,
       propositions,
       faker.lorem.sentence(),
     );
@@ -190,10 +177,9 @@ describe('Question Mapper', () => {
 
     expect(questionRelationalEntity.id).toEqual(question.id);
     expect(questionRelationalEntity.value).toEqual(question.value);
-    expect(questionRelationalEntity.organization.id).toEqual(
+    expect(questionRelationalEntity.organizationId).toEqual(
       question.organization.id,
     );
-    expect(questionRelationalEntity.answer.id).toEqual(question.answer.id);
     expect(questionRelationalEntity.createdAt).toEqual(question.createdAt);
     expect(questionRelationalEntity.updatedAt).toEqual(question.updatedAt);
     expect(questionRelationalEntity.deletedAt).toEqual(

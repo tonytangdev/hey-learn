@@ -12,7 +12,6 @@ export class Question {
   constructor(
     value: string,
     public readonly organization: Organization,
-    public readonly answer: Answer,
     public readonly propositions: Answer[],
     public readonly category?: string,
     public readonly id: string = PREFIX + randomUUID(),
@@ -32,6 +31,7 @@ export class Question {
   }
 
   getAnswer() {
-    return this.answer.value;
+    return this.propositions.find((proposition) => proposition.isCorrect)
+      ?.value;
   }
 }

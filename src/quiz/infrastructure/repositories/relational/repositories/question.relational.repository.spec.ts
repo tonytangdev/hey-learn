@@ -50,16 +50,12 @@ describe('Question Relational Repository', () => {
     const question = new Question(
       faker.lorem.sentence(),
       organization,
-      answer,
       propositions,
     );
 
     const questionRelationalEntity = new QuestionRelationalEntity();
     questionRelationalEntity.id = randomUUID();
     questionRelationalEntity.value = faker.lorem.sentence();
-    questionRelationalEntity.answer = new AnswerRelationalEntity();
-    questionRelationalEntity.answer.id = randomUUID();
-    questionRelationalEntity.answer.value = faker.lorem.sentence();
     questionRelationalEntity.propositions = Array.from({ length: 2 }, () => {
       const proposition = new AnswerRelationalEntity();
       proposition.id = randomUUID();
@@ -71,6 +67,10 @@ describe('Question Relational Repository', () => {
 
     const spy = jest
       .spyOn(mockRepository, 'save')
+      .mockResolvedValueOnce(questionRelationalEntity);
+
+    jest
+      .spyOn(mockRepository, 'findOne')
       .mockResolvedValueOnce(questionRelationalEntity);
 
     const res = await questionRelationalRepository.save(question);
