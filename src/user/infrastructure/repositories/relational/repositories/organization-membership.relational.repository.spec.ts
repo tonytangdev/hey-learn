@@ -27,6 +27,7 @@ describe('OrganizationMembershipRelationalRepository', () => {
         {
           provide: getRepositoryToken(OrganizationMembershipRelationalEntity),
           useValue: {
+            findOne: jest.fn(),
             save: jest.fn(() => {
               const entity = new OrganizationMembershipRelationalEntity();
               entity.id = randomUUID();
@@ -72,6 +73,8 @@ describe('OrganizationMembershipRelationalRepository', () => {
     typeORMRepository = moduleRef.get<
       Repository<OrganizationMembershipRelationalEntity>
     >(getRepositoryToken(OrganizationMembershipRelationalEntity));
+
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -89,5 +92,43 @@ describe('OrganizationMembershipRelationalRepository', () => {
     expect(typeORMRepository.save).toHaveBeenCalledWith(
       expect.any(OrganizationMembershipRelationalEntity),
     );
+  });
+
+  it('should find organization membership by id', async () => {
+    const membership = new Membership(
+      new UserEntityBuilder().withEmail(faker.internet.email()).build(),
+      new Organization(ORGANIZATION_TYPES.SINGLE),
+    );
+
+    const organizationMembershipEntity =
+      new OrganizationMembershipRelationalEntity();
+    organizationMembershipEntity.id = randomUUID();
+    organizationMembershipEntity.user = new UserRelationalEntity();
+    organizationMembershipEntity.user.id = membership.user.id;
+    organizationMembershipEntity.user.email = membership.user.getEmail();
+    organizationMembershipEntity.organization =
+      new OrganizationRelationalEntity();
+    organizationMembershipEntity.organization.id = membership.organization.id;
+    organizationMembershipEntity.organization.type =
+      membership.organization.getOrganizationType();
+
+    const spy = jest
+      .spyOn(typeORMRepository, 'findOne')
+      .mockResolvedValue(organizationMembershipEntity);
+
+    const res =
+      await organizationMembershipRelationRepository.findByOrganizationIdAndUserId(
+        membership.organization.id,
+        membership.user.id,
+      );
+
+    expect(spy).toHaveBeenCalledWith({
+      where: {
+        organization: { id: membership.organization.id },
+        user: { id: membership.user.id },
+      },
+    });
+
+    expect(res).toEqual(expect.any(Membership));
   });
 });
