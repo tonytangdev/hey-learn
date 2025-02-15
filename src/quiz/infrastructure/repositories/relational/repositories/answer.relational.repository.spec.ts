@@ -3,7 +3,7 @@ import { AnswerRelationalRepository } from './answer.relational.repository';
 import { AnswerRelationalEntity } from '../entities/answer.relational-entity';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Answer } from '../../../../../domain/entities/answer.entity';
+import { Answer } from '../../../../domain/entities/answer.entity';
 import { faker } from '@faker-js/faker';
 
 describe('Answer Relational Repository', () => {

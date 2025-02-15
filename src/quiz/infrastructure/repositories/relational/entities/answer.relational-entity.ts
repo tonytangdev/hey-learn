@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
@@ -17,6 +18,7 @@ export class AnswerRelationalEntity {
     () => QuestionRelationalEntity,
     (question) => question.propositions,
   )
+  @JoinColumn({ name: 'question_id' })
   question: QuestionRelationalEntity;
 
   @Column()

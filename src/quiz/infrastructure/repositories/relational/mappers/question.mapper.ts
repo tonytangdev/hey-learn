@@ -1,9 +1,9 @@
-import { Question } from '../../../../../domain/entities/question.entity';
+import { Question } from '../../../../domain/entities/question.entity';
 import { QuestionRelationalEntity } from '../entities/question.relational-entity';
-import { Answer } from '../../../../../domain/entities/answer.entity';
-import { Organization } from '../../../../../domain/entities/organization.entity';
-import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
+import { Answer } from '../../../../domain/entities/answer.entity';
+import { Organization } from '../../../../domain/entities/organization.entity';
 import { AnswerRelationalEntity } from '../entities/answer.relational-entity';
+import { OrganizationRelationalEntity } from '../../../../../user/infrastructure/repositories/relational/entities/organization.relational-entity';
 
 export class QuestionMapper {
   static toDomain(

@@ -1,6 +1,5 @@
 import { Test } from '@nestjs/testing';
 import { AnswerRepository } from '../repositories/answer.repository';
-import { OrganizationRepository } from '../repositories/organization.repository';
 import { QuestionRepository } from '../repositories/question.repository';
 import { QuizService } from './quiz.service';
 import {
@@ -8,22 +7,19 @@ import {
   TransactionManager,
 } from '../../../shared/interfaces/transaction-manager';
 import { CreateQuizDTO } from '../dtos/create-quiz.dto';
-import { OrganizationNotFoundError } from '../errors/organization-not-found.error';
 import { randomUUID } from 'node:crypto';
 import { faker } from '@faker-js/faker';
 import { Transaction } from '../../../shared/interfaces/transaction';
-import { Organization } from '../../domain/entities/organization.entity';
 import { CreateQuizError } from '../errors/create-quiz.error';
-import { OrganizationMembershipRepository } from '../repositories/organization-membership.repository';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
-import { OrganizationMembership } from '../../domain/entities/organization-membership.entity';
+import { Membership } from 'src/user/domain/entities/membership.entity';
+import { OrganizationMembershipService } from '../../../user/application/services/organization.service';
 
 describe('Quiz service', () => {
   let quizService: QuizService;
   let questionRepository: QuestionRepository;
   let answersRepository: AnswerRepository;
-  let organizationRepository: OrganizationRepository;
-  let organizationMembershipRepository: OrganizationMembershipRepository;
+  let organizationMembershipService: OrganizationMembershipService;
   let transactionManager: TransactionManager;
 
   beforeEach(async () => {
@@ -43,13 +39,7 @@ describe('Quiz service', () => {
           },
         },
         {
-          provide: OrganizationRepository,
-          useValue: {
-            findById: jest.fn(),
-          },
-        },
-        {
-          provide: OrganizationMembershipRepository,
+          provide: OrganizationMembershipService,
           useValue: {
             findByOrganizationIdAndUserId: jest.fn(),
           },
@@ -66,12 +56,9 @@ describe('Quiz service', () => {
     quizService = moduleRef.get<QuizService>(QuizService);
     questionRepository = moduleRef.get<QuestionRepository>(QuestionRepository);
     answersRepository = moduleRef.get<AnswerRepository>(AnswerRepository);
-    organizationRepository = moduleRef.get<OrganizationRepository>(
-      OrganizationRepository,
-    );
-    organizationMembershipRepository =
-      moduleRef.get<OrganizationMembershipRepository>(
-        OrganizationMembershipRepository,
+    organizationMembershipService =
+      moduleRef.get<OrganizationMembershipService>(
+        OrganizationMembershipService,
       );
     transactionManager = moduleRef.get<TransactionManager>(TRANSACTION_MANAGER);
 
@@ -82,24 +69,10 @@ describe('Quiz service', () => {
     expect(quizService).toBeDefined();
   });
 
-  it('should throw an error if the organization does not exist', async () => {
-    (organizationRepository.findById as jest.Mock).mockResolvedValue(null);
-
-    const organizationId = randomUUID();
-    const dto = new CreateQuizDTO();
-    dto.organizationId = organizationId;
-
-    await expect(quizService.createQuiz(dto)).rejects.toThrow(
-      new OrganizationNotFoundError(organizationId),
-    );
-  });
-
   it('should create a quiz', async () => {
     (
-      organizationMembershipRepository.findByOrganizationIdAndUserId as jest.Mock
-    ).mockResolvedValue(
-      new OrganizationMembership(randomUUID(), randomUUID(), randomUUID()),
-    );
+      organizationMembershipService.findByOrganizationIdAndUserId as jest.Mock
+    ).mockResolvedValue({} as unknown as Membership);
 
     const transaction: Transaction = {
       getRepository: jest
@@ -114,13 +87,8 @@ describe('Quiz service', () => {
       },
     );
 
-    const organizationId = randomUUID();
-    (organizationRepository.findById as jest.Mock).mockResolvedValue(
-      new Organization(organizationId),
-    );
-
     const dto = new CreateQuizDTO();
-    dto.organizationId = organizationId;
+    dto.organizationId = randomUUID();
     dto.question = faker.lorem.sentence();
     dto.answer = faker.lorem.sentence();
     dto.wrongAnswers = [faker.lorem.sentence(), faker.lorem.sentence()];
@@ -136,10 +104,8 @@ describe('Quiz service', () => {
     );
 
     (
-      organizationMembershipRepository.findByOrganizationIdAndUserId as jest.Mock
-    ).mockResolvedValue(
-      new OrganizationMembership(randomUUID(), randomUUID(), randomUUID()),
-    );
+      organizationMembershipService.findByOrganizationIdAndUserId as jest.Mock
+    ).mockResolvedValue({} as unknown as Membership);
 
     const transaction: Transaction = {
       getRepository: jest
@@ -152,12 +118,9 @@ describe('Quiz service', () => {
         await operation(transaction);
       },
     );
-    const organizationId = randomUUID();
-    (organizationRepository.findById as jest.Mock).mockResolvedValue(
-      new Organization(organizationId),
-    );
+
     const dto = new CreateQuizDTO();
-    dto.organizationId = organizationId;
+    dto.organizationId = randomUUID();
     dto.question = faker.lorem.sentence();
     dto.answer = faker.lorem.sentence();
     dto.wrongAnswers = [faker.lorem.sentence(), faker.lorem.sentence()];
@@ -172,10 +135,9 @@ describe('Quiz service', () => {
       new Error('Test error'),
     );
     (
-      organizationMembershipRepository.findByOrganizationIdAndUserId as jest.Mock
-    ).mockResolvedValue(
-      new OrganizationMembership(randomUUID(), randomUUID(), randomUUID()),
-    );
+      organizationMembershipService.findByOrganizationIdAndUserId as jest.Mock
+    ).mockResolvedValue({} as unknown as Membership);
+
     const transaction: Transaction = {
       getRepository: jest
         .fn()
@@ -187,12 +149,9 @@ describe('Quiz service', () => {
         await operation(transaction);
       },
     );
-    const organizationId = randomUUID();
-    (organizationRepository.findById as jest.Mock).mockResolvedValue(
-      new Organization(organizationId),
-    );
+
     const dto = new CreateQuizDTO();
-    dto.organizationId = organizationId;
+    dto.organizationId = randomUUID();
     dto.question = faker.lorem.sentence();
     dto.answer = faker.lorem.sentence();
     dto.wrongAnswers = [faker.lorem.sentence(), faker.lorem.sentence()];
@@ -204,16 +163,11 @@ describe('Quiz service', () => {
 
   it('should throw an error when user is not a member of the organization', async () => {
     (
-      organizationMembershipRepository.findByOrganizationIdAndUserId as jest.Mock
+      organizationMembershipService.findByOrganizationIdAndUserId as jest.Mock
     ).mockResolvedValue(null);
 
-    const organizationId = randomUUID();
-    (organizationRepository.findById as jest.Mock).mockResolvedValue(
-      new Organization(organizationId),
-    );
-
     const dto = new CreateQuizDTO();
-    dto.organizationId = organizationId;
+    dto.organizationId = randomUUID();
     dto.question = faker.lorem.sentence();
     dto.answer = faker.lorem.sentence();
     dto.wrongAnswers = [faker.lorem.sentence(), faker.lorem.sentence()];

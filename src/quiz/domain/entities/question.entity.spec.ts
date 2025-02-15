@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { Answer } from './answer.entity';
 import { MissingQuestionValueError } from '../errors/missing-question-value.error';
 import { MissingQuestionPropositionsError } from '../errors/missing-question-propositions.error';
-import { QuestionEntityBuilder } from '../entity-builders/question.entity-builder';
+import { QuestionEntityBuilder } from '../entities-builders/question.entity-builder';
 
 describe('Question', () => {
   it.each([

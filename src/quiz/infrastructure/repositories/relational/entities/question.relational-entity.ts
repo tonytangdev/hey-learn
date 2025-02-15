@@ -8,8 +8,8 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { OrganizationRelationalEntity } from './organization.relational-entity';
 import { AnswerRelationalEntity } from './answer.relational-entity';
+import { OrganizationRelationalEntity } from '../../../../../user/infrastructure/repositories/relational/entities/organization.relational-entity';
 
 @Entity({ name: 'question' })
 export class QuestionRelationalEntity {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { AnswerRepository } from '../../../../../../quiz/application/repositories/answer.repository';
-import { Answer } from '../../../../../domain/entities/answer.entity';
+import { AnswerRepository } from '../../../../application/repositories/answer.repository';
+import { Answer } from '../../../../domain/entities/answer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AnswerRelationalEntity } from '../entities/answer.relational-entity';
 import { Repository } from 'typeorm';

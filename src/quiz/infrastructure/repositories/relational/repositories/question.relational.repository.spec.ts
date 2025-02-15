@@ -3,13 +3,13 @@ import { QuestionRelationalRepository } from './question.relational.repository';
 import { QuestionRelationalEntity } from '../entities/question.relational-entity';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Question } from '../../../../../domain/entities/question.entity';
+import { Question } from '../../../../domain/entities/question.entity';
 import { faker } from '@faker-js/faker';
-import { Organization } from '../../../../../domain/entities/organization.entity';
+import { Organization } from '../../../../domain/entities/organization.entity';
 import { randomUUID } from 'node:crypto';
-import { Answer } from '../../../../../domain/entities/answer.entity';
+import { Answer } from '../../../../domain/entities/answer.entity';
 import { AnswerRelationalEntity } from '../entities/answer.relational-entity';
-import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
+import { OrganizationRelationalEntity } from '../../../../../user/infrastructure/repositories/relational/entities/organization.relational-entity';
 
 describe('Question Relational Repository', () => {
   let questionRelationalRepository: QuestionRelationalRepository;

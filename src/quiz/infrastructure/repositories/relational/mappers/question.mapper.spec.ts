@@ -1,12 +1,12 @@
 import { randomUUID } from 'node:crypto';
 import { QuestionRelationalEntity } from '../entities/question.relational-entity';
 import { faker } from '@faker-js/faker/.';
-import { OrganizationRelationalEntity } from '../entities/organization.relational-entity';
 import { AnswerRelationalEntity } from '../entities/answer.relational-entity';
 import { QuestionMapper } from './question.mapper';
-import { Question } from '../../../../../domain/entities/question.entity';
-import { Answer } from '../../../../../domain/entities/answer.entity';
-import { Organization } from '../../../../../domain/entities/organization.entity';
+import { Question } from '../../../../domain/entities/question.entity';
+import { Answer } from '../../../../domain/entities/answer.entity';
+import { Organization } from '../../../../domain/entities/organization.entity';
+import { OrganizationRelationalEntity } from '../../../../../user/infrastructure/repositories/relational/entities/organization.relational-entity';
 
 describe('Question Mapper', () => {
   it.each([

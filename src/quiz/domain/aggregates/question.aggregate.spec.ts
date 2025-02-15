@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker/.';
-import { QuestionEntityBuilder } from '../entity-builders/question.entity-builder';
+import { QuestionEntityBuilder } from '../entities-builders/question.entity-builder';
 import { QuestionAggregate } from './question.aggregate';
 import { randomUUID } from 'node:crypto';
 

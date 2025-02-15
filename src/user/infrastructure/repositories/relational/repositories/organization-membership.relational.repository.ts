@@ -22,4 +22,18 @@ export class OrganizationMembershipRelationalRepository
       await this.organizationMembershipRepository.save(membershipEntity);
     return OrganizationMembershipMapper.toDomain(result);
   }
+
+  async findByOrganizationIdAndUserId(
+    organizationId: Membership['organization']['id'],
+    userId: Membership['user']['id'],
+  ): Promise<Membership | null> {
+    const membershipEntity =
+      await this.organizationMembershipRepository.findOne({
+        where: { organization: { id: organizationId }, user: { id: userId } },
+      });
+
+    return membershipEntity
+      ? Promise.resolve(OrganizationMembershipMapper.toDomain(membershipEntity))
+      : Promise.resolve(null);
+  }
 }

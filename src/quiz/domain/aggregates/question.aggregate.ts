@@ -1,5 +1,5 @@
 import { Question } from '../entities/question.entity';
-import { QuestionEntityBuilder } from '../entity-builders/question.entity-builder';
+import { QuestionEntityBuilder } from '../entities-builders/question.entity-builder';
 import { Organization } from '../entities/organization.entity';
 
 export class QuestionAggregate {

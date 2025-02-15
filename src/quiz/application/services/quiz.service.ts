@@ -1,9 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { QuestionRepository } from '../repositories/question.repository';
 import { AnswerRepository } from '../repositories/answer.repository';
-import { OrganizationRepository } from '../repositories/organization.repository';
 import { CreateQuizDTO } from '../dtos/create-quiz.dto';
-import { OrganizationNotFoundError } from '../errors/organization-not-found.error';
 import { QuestionAggregate } from '../../domain/aggregates/question.aggregate';
 import {
   TRANSACTION_MANAGER,
@@ -13,9 +11,9 @@ import { CreateQuizError } from '../errors/create-quiz.error';
 import { Organization } from '../../domain/entities/organization.entity';
 import { Question } from '../../domain/entities/question.entity';
 import { Answer } from '../../domain/entities/answer.entity';
-import { OrganizationMembershipRepository } from '../repositories/organization-membership.repository';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
 import { OrganizationMembership } from '../../domain/entities/organization-membership.entity';
+import { OrganizationMembershipService } from '../../../user/application/services/organization.service';
 
 @Injectable()
 export class QuizService {
@@ -24,8 +22,8 @@ export class QuizService {
   constructor(
     private readonly questionRepository: QuestionRepository,
     private readonly answerRepository: AnswerRepository,
-    private readonly organizationRepository: OrganizationRepository,
-    private readonly organizationMembershipRepository: OrganizationMembershipRepository,
+
+    private readonly organizationMembershipService: OrganizationMembershipService,
 
     @Inject(TRANSACTION_MANAGER)
     private readonly transactionManager: TransactionManager,
@@ -34,10 +32,6 @@ export class QuizService {
   async createQuiz(dto: CreateQuizDTO) {
     const { question, answer, wrongAnswers, category, organizationId, userId } =
       dto;
-
-    if (await this.organizationNotFound(organizationId)) {
-      throw new OrganizationNotFoundError(organizationId);
-    }
 
     if (await this.userIsNotMemberOfOrganization(organizationId, userId)) {
       throw new UserNotMemberOfOrganizationError();
@@ -60,18 +54,12 @@ export class QuizService {
     }
   }
 
-  private async organizationNotFound(organizationId: Organization['id']) {
-    const organization =
-      await this.organizationRepository.findById(organizationId);
-    return !organization;
-  }
-
   private async userIsNotMemberOfOrganization(
     organizationId: OrganizationMembership['organizationId'],
     userId: OrganizationMembership['userId'],
   ) {
     const membership =
-      await this.organizationMembershipRepository.findByOrganizationIdAndUserId(
+      await this.organizationMembershipService.findByOrganizationIdAndUserId(
         organizationId,
         userId,
       );
