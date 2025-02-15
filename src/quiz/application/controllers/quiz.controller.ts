@@ -28,7 +28,8 @@ export class QuizController {
     @Res() res: Response,
   ) {
     // TODO: get user id from JWT
-    dto.userId = req.user?.userId ?? 'GET_ID_FROM_TOKEN';
+    dto.userId =
+      req.user?.userId ?? 'user_edbb95d0-58a7-464d-af10-9608ba1445c1';
 
     try {
       await this.createQuizCommandHandler.handle(dto);

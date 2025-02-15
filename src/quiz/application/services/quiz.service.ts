@@ -10,7 +10,6 @@ import {
 import { CreateQuizError } from '../errors/create-quiz.error';
 import { Organization } from '../../domain/entities/organization.entity';
 import { Question } from '../../domain/entities/question.entity';
-import { Answer } from '../../domain/entities/answer.entity';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
 import { Membership } from '../../../user/domain/entities/membership.entity';
 import { OrganizationMembershipService } from '../../../user/application/services/organization-membership.service';
@@ -37,7 +36,7 @@ export class QuizService {
       throw new UserNotMemberOfOrganizationError();
     }
 
-    const { quizQuestion, propositions } = this.prepareQuizData(
+    const { quizQuestion } = this.prepareQuizData(
       question,
       answer,
       wrongAnswers,
@@ -46,7 +45,7 @@ export class QuizService {
     );
 
     try {
-      await this.saveDataInDatabase(quizQuestion, propositions);
+      await this.saveDataInDatabase(quizQuestion);
     } catch (error) {
       this.logger.error(error);
       this.logger.error({ dto });
@@ -89,20 +88,13 @@ export class QuizService {
     };
   }
 
-  private async saveDataInDatabase(question: Question, propositions: Answer[]) {
+  private async saveDataInDatabase(question: Question) {
     await this.transactionManager.execute(async (transaction) => {
       const questionRepository = transaction.getRepository(
         this.questionRepository,
       );
+
       await questionRepository.save(question);
-
-      const answerRepository = transaction.getRepository(this.answerRepository);
-
-      await Promise.all(
-        propositions.map(async (proposition) => {
-          await answerRepository.save(proposition);
-        }),
-      );
     });
   }
 }

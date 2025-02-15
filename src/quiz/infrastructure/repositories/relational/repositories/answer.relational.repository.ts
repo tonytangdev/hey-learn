@@ -20,7 +20,13 @@ export class AnswerRelationalRepository implements AnswerRepository {
     answerEntity.updatedAt = answer.updatedAt;
     answerEntity.deletedAt = answer.deletedAt ?? null;
 
-    const savedAnswer = await this.repository.save(answerEntity);
+    console.log({ answerEntity });
+
+    const res = await this.repository.insert(answerEntity);
+
+    const savedAnswer = res.generatedMaps[0] as AnswerRelationalEntity;
+
+    console.log({ savedAnswer });
 
     return new Answer(
       savedAnswer.value,

@@ -3,7 +3,6 @@ import { QuestionRelationalEntity } from '../entities/question.relational-entity
 import { Answer } from '../../../../domain/entities/answer.entity';
 import { Organization } from '../../../../domain/entities/organization.entity';
 import { AnswerRelationalEntity } from '../entities/answer.relational-entity';
-import { OrganizationRelationalEntity } from '../../../../../user/infrastructure/repositories/relational/entities/organization.relational-entity';
 
 export class QuestionMapper {
   static toDomain(
@@ -44,10 +43,7 @@ export class QuestionMapper {
     relational.createdAt = question.createdAt;
     relational.updatedAt = question.updatedAt;
     relational.deletedAt = question.deletedAt ?? null;
-
-    const organizationRelational = new OrganizationRelationalEntity();
-    organizationRelational.id = question.organization.id;
-    relational.organization = organizationRelational;
+    relational.organizationId = question.organization.id;
 
     const answerRelational = new AnswerRelationalEntity();
     answerRelational.id = question.answer.id;
@@ -57,17 +53,17 @@ export class QuestionMapper {
     answerRelational.deletedAt = question.answer.deletedAt ?? null;
     relational.answer = answerRelational;
 
-    const propositionsRelational = question.propositions.map((proposition) => {
-      const propositionRelational = new AnswerRelationalEntity();
-      propositionRelational.id = proposition.id;
-      propositionRelational.value = proposition.value;
-      propositionRelational.createdAt = proposition.createdAt;
-      propositionRelational.updatedAt = proposition.updatedAt;
-      propositionRelational.deletedAt = proposition.deletedAt ?? null;
-      return propositionRelational;
-    });
+    // const propositionsRelational = question.propositions.map((proposition) => {
+    //   const propositionRelational = new AnswerRelationalEntity();
+    //   propositionRelational.id = proposition.id;
+    //   propositionRelational.value = proposition.value;
+    //   propositionRelational.createdAt = proposition.createdAt;
+    //   propositionRelational.updatedAt = proposition.updatedAt;
+    //   propositionRelational.deletedAt = proposition.deletedAt ?? null;
+    //   return propositionRelational;
+    // });
 
-    relational.propositions = propositionsRelational;
+    // relational.propositions = propositionsRelational;
     return relational;
   }
 }

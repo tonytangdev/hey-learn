@@ -16,10 +16,18 @@ export class QuestionRelationalRepository implements QuestionRepository {
   async save(question: Question): Promise<Question> {
     const questionRelationalEntity = QuestionMapper.toRelational(question);
 
-    const savedQuestionRelationalEntity = await this.repository.save(
-      questionRelationalEntity,
-    );
+    await this.repository.save(questionRelationalEntity);
 
-    return QuestionMapper.toDomain(savedQuestionRelationalEntity);
+    const fetchedQuestionRelationalEntity = await this.repository.findOne({
+      where: { id: question.id },
+      relations: ['organization', 'answer', 'propositions'],
+    });
+
+    if (!fetchedQuestionRelationalEntity) {
+      throw new Error('Question not found');
+    }
+
+    console.log({ fetchedQuestionRelationalEntity });
+    return QuestionMapper.toDomain(fetchedQuestionRelationalEntity);
   }
 }

@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   OneToMany,
   OneToOne,
@@ -20,17 +21,23 @@ export class QuestionRelationalEntity {
   @JoinColumn({ name: 'organization_id' })
   organization: OrganizationRelationalEntity;
 
+  @Column({ name: 'organization_id' })
+  organizationId: string;
+
   @OneToOne(() => AnswerRelationalEntity)
   @JoinColumn({ name: 'answer_id' })
   answer: AnswerRelationalEntity;
 
-  @OneToMany(() => AnswerRelationalEntity, (answer) => answer.question)
+  @OneToMany(() => AnswerRelationalEntity, (answer) => answer.question, {
+    cascade: true,
+  })
   propositions: AnswerRelationalEntity[];
 
   @Column()
   value: string;
 
   @Column({ type: String, nullable: true })
+  @Index()
   category: string | null;
 
   @CreateDateColumn({ name: 'created_at' })

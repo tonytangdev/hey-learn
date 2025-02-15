@@ -18,11 +18,11 @@ export class OrganizationMembershipRelationalEntity {
   @PrimaryColumn()
   id: string;
 
-  @OneToOne(() => OrganizationRelationalEntity)
+  @OneToOne(() => OrganizationRelationalEntity, { eager: true })
   @JoinColumn({ name: 'organization_id' })
   organization: Omit<OrganizationRelationalEntity, 'createdBy'>;
 
-  @OneToOne(() => UserRelationalEntity)
+  @OneToOne(() => UserRelationalEntity, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: UserRelationalEntity;
 
