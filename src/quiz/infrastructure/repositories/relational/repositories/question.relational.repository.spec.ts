@@ -78,4 +78,39 @@ describe('Question Relational Repository', () => {
     expect(spy).toHaveBeenCalledWith(expect.any(QuestionRelationalEntity));
     expect(res).toBeInstanceOf(Question);
   });
+
+  it('should throw an error if the question is not found', async () => {
+    const organization = new Organization(randomUUID());
+    const answer = new Answer(faker.lorem.sentence());
+    const propositions = [answer, new Answer(faker.lorem.sentence())];
+    const question = new Question(
+      faker.lorem.sentence(),
+      organization,
+      propositions,
+    );
+    const findSpy = jest
+      .spyOn(mockRepository, 'findOne')
+      .mockResolvedValueOnce(null);
+
+    const questionRelationalEntity = new QuestionRelationalEntity();
+    questionRelationalEntity.id = randomUUID();
+    questionRelationalEntity.value = faker.lorem.sentence();
+    questionRelationalEntity.propositions = Array.from({ length: 2 }, () => {
+      const proposition = new AnswerRelationalEntity();
+      proposition.id = randomUUID();
+      proposition.value = faker.lorem.sentence();
+      return proposition;
+    });
+    questionRelationalEntity.organization = new OrganizationRelationalEntity();
+    questionRelationalEntity.organization.id = randomUUID();
+    const saveSpy = jest
+      .spyOn(mockRepository, 'save')
+      .mockResolvedValueOnce(questionRelationalEntity);
+
+    await expect(questionRelationalRepository.save(question)).rejects.toThrow(
+      'Question not found',
+    );
+    expect(findSpy).toHaveBeenCalled();
+    expect(saveSpy).toHaveBeenCalledWith(expect.any(QuestionRelationalEntity));
+  });
 });
