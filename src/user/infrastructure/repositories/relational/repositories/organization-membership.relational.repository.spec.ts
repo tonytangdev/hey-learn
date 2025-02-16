@@ -131,4 +131,26 @@ describe('OrganizationMembershipRelationalRepository', () => {
 
     expect(res).toEqual(expect.any(Membership));
   });
+
+  it('should return null if organization membership not found', async () => {
+    const spy = jest
+      .spyOn(typeORMRepository, 'findOne')
+      .mockResolvedValue(null);
+    const userId = randomUUID();
+    const organizationId = randomUUID();
+
+    const res =
+      await organizationMembershipRelationRepository.findByOrganizationIdAndUserId(
+        organizationId,
+        userId,
+      );
+
+    expect(res).toBeNull();
+    expect(spy).toHaveBeenCalledWith({
+      where: {
+        organization: { id: organizationId },
+        user: { id: userId },
+      },
+    });
+  });
 });
