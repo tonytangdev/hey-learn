@@ -48,6 +48,8 @@ export class QuizController {
   @Post('generate')
   generate(@Body() dto: GenerateQuizDTO, @Res() res: Response) {
     void this.generateQuizCommandHandler.handle(dto);
-    res.status(HttpStatus.ACCEPTED).send('generate');
+    res.status(HttpStatus.ACCEPTED).send({
+      message: 'Quiz generation started',
+    });
   }
 }

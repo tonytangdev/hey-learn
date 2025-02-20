@@ -10,12 +10,18 @@ import { QuestionRelationalRepository } from './infrastructure/repositories/rela
 import { TRANSACTION_MANAGER } from '../shared/interfaces/transaction-manager';
 import { TransactionManagerTypeORM } from './infrastructure/transaction-managers/transaction-manager.typeorm';
 import { UserModule } from '../user/user.module';
+import { LLM } from './application/llm/llm';
+import { LocalLLM } from './infrastructure/llm/local.llm';
+import { LLMService } from './application/services/llm.service';
+import { GenerateQuizCommandHandler } from './application/handlers/commands/generate-quiz-command.handler';
 
 @Module({
   controllers: [QuizController],
   providers: [
     CreateQuizCommandHandler,
+    GenerateQuizCommandHandler,
     QuizService,
+    LLMService,
     {
       provide: QuestionRepository,
       useClass: QuestionRelationalRepository,
@@ -23,6 +29,10 @@ import { UserModule } from '../user/user.module';
     {
       provide: TRANSACTION_MANAGER,
       useClass: TransactionManagerTypeORM,
+    },
+    {
+      provide: LLM,
+      useClass: LocalLLM,
     },
   ],
   imports: [
