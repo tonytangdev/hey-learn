@@ -25,6 +25,7 @@ import { QuizModule } from './quiz/quiz.module';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
     EventEmitterModule.forRoot(),
     UserModule,

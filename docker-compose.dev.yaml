@@ -1,5 +1,6 @@
 services:
   postgres:
+    container_name: hey-learn-db-dev
     image: postgres:17.0-alpine
     ports:
       - ${DATABASE_PORT}:5432
