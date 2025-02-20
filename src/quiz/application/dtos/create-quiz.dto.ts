@@ -29,5 +29,7 @@ export class CreateQuizDTO {
   @IsNotEmpty()
   organizationId: string;
 
+  @IsString()
+  @IsNotEmpty()
   userId: string;
 }

@@ -4,7 +4,7 @@ import { QuizController } from './quiz.controller';
 import { CreateQuizDTO } from '../dtos/create-quiz.dto';
 import { randomUUID } from 'node:crypto';
 import { Response } from 'express';
-import { HttpStatus, Request } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { OrganizationNotFoundError } from '../errors/organization-not-found.error';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
 
@@ -38,9 +38,6 @@ describe('QuizController', () => {
   });
 
   it('should throw a 500 status code when an error occurs', async () => {
-    const req = {
-      user: { userId: randomUUID() },
-    } as unknown as Request & { user: { userId: string } };
     const res = {
       send: jest.fn().mockReturnThis(),
       status: jest.fn().mockReturnThis(),
@@ -51,7 +48,7 @@ describe('QuizController', () => {
       .mockRejectedValueOnce(new Error());
 
     const dto = new CreateQuizDTO();
-    await controller.create(dto, req, res);
+    await controller.create(dto, res);
 
     expect(handleSpy).toHaveBeenCalledWith(dto);
     expect(res.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,9 +68,6 @@ describe('QuizController', () => {
       status: HttpStatus.BAD_REQUEST,
     },
   ])('should throw an error : %s', async ({ error, status }) => {
-    const req = {
-      user: { userId: randomUUID() },
-    } as unknown as Request & { user: { userId: string } };
     const res = {
       send: jest.fn().mockReturnThis(),
       status: jest.fn().mockReturnThis(),
@@ -86,7 +80,7 @@ describe('QuizController', () => {
       .spyOn(createQuizCommandHandler, 'handle')
       .mockRejectedValueOnce(error);
 
-    await controller.create(dto, req, res);
+    await controller.create(dto, res);
 
     expect(handleSpy).toHaveBeenCalledWith(dto);
     expect(res.status).toHaveBeenCalledWith(status);
@@ -94,15 +88,12 @@ describe('QuizController', () => {
   });
 
   it('should create a quiz', async () => {
-    const req = {
-      user: { userId: randomUUID() },
-    } as unknown as Request & { user: { userId: string } };
     const res = {
       send: jest.fn().mockReturnThis(),
       status: jest.fn().mockReturnThis(),
     } as unknown as Response;
     const dto = new CreateQuizDTO();
-    await controller.create(dto, req, res);
+    await controller.create(dto, res);
     expect(createQuizCommandHandler.handle).toHaveBeenCalledWith(dto);
     expect(res.status).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
     expect(res.send).toHaveBeenCalled();

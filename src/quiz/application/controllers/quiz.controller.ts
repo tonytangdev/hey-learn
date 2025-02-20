@@ -4,7 +4,6 @@ import {
   HttpStatus,
   Logger,
   Post,
-  Request,
   Res,
 } from '@nestjs/common';
 import { CreateQuizCommandHandler } from '../handlers/commands/create-quiz-command.handler';
@@ -22,15 +21,7 @@ export class QuizController {
   ) {}
 
   @Post()
-  async create(
-    @Body() dto: CreateQuizDTO,
-    @Request() req: Request & { user?: { userId: string } },
-    @Res() res: Response,
-  ) {
-    // TODO: get user id from JWT
-    dto.userId =
-      req.user?.userId ?? 'user_edbb95d0-58a7-464d-af10-9608ba1445c1';
-
+  async create(@Body() dto: CreateQuizDTO, @Res() res: Response) {
     try {
       await this.createQuizCommandHandler.handle(dto);
       res.status(HttpStatus.ACCEPTED).send();
