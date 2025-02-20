@@ -11,6 +11,8 @@ import { CreateQuizDTO } from '../dtos/create-quiz.dto';
 import { Response } from 'express';
 import { OrganizationNotFoundError } from '../errors/organization-not-found.error';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
+import { GenerateQuizDTO } from '../dtos/generate-quiz.dto';
+import { GenerateQuizCommandHandler } from '../handlers/commands/generate-quiz-command.handler';
 
 @Controller('quiz')
 export class QuizController {
@@ -18,6 +20,7 @@ export class QuizController {
 
   constructor(
     private readonly createQuizCommandHandler: CreateQuizCommandHandler,
+    private readonly generateQuizCommandHandler: GenerateQuizCommandHandler,
   ) {}
 
   @Post()
@@ -40,5 +43,11 @@ export class QuizController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .send({ message: 'Internal Server Error' });
     }
+  }
+
+  @Post('generate')
+  generate(@Body() dto: GenerateQuizDTO, @Res() res: Response) {
+    void this.generateQuizCommandHandler.handle(dto);
+    res.status(HttpStatus.ACCEPTED).send('generate');
   }
 }
