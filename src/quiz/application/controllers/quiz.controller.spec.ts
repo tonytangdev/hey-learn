@@ -7,10 +7,12 @@ import { Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
 import { OrganizationNotFoundError } from '../errors/organization-not-found.error';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
+import { GenerateQuizCommandHandler } from '../handlers/commands/generate-quiz-command.handler';
 
 describe('QuizController', () => {
   let controller: QuizController;
   let createQuizCommandHandler: CreateQuizCommandHandler;
+  let generateQuizCommandHandler: GenerateQuizCommandHandler;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -22,12 +24,21 @@ describe('QuizController', () => {
             handle: jest.fn(),
           },
         },
+        {
+          provide: GenerateQuizCommandHandler,
+          useValue: {
+            handle: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     controller = moduleRef.get<QuizController>(QuizController);
     createQuizCommandHandler = moduleRef.get<CreateQuizCommandHandler>(
       CreateQuizCommandHandler,
+    );
+    generateQuizCommandHandler = moduleRef.get<GenerateQuizCommandHandler>(
+      GenerateQuizCommandHandler,
     );
 
     jest.clearAllMocks();

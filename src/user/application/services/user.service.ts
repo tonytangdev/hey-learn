@@ -40,7 +40,10 @@ export class UserService {
     }
 
     const { user, organization, membership, domainEvents } =
-      this.prepareUserAndItsDefaultOrganization(dto.email);
+      this.prepareUserAndItsDefaultOrganization({
+        id: dto.id,
+        email: dto.email,
+      });
 
     try {
       await this.saveDataInDatabase(user, organization, membership);
@@ -58,8 +61,14 @@ export class UserService {
     return !!user;
   }
 
-  private prepareUserAndItsDefaultOrganization(email: string) {
-    const userAggregate = UserAggregate.createUser(email);
+  private prepareUserAndItsDefaultOrganization({
+    id,
+    email,
+  }: {
+    id: string;
+    email: string;
+  }) {
+    const userAggregate = UserAggregate.createUser({ id, emailAddress: email });
     userAggregate.createDefaultOrganization();
 
     return {

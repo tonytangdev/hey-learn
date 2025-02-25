@@ -16,8 +16,17 @@ export class UserAggregate {
 
   constructor(private readonly user: User) {}
 
-  static createUser(emailAddress: string) {
-    const user = new UserEntityBuilder().withEmail(emailAddress).build();
+  static createUser({
+    id,
+    emailAddress,
+  }: {
+    id: string;
+    emailAddress: string;
+  }) {
+    const user = new UserEntityBuilder()
+      .withId(id)
+      .withEmail(emailAddress)
+      .build();
     const userAggregate = new UserAggregate(user);
     userAggregate.domainEvents.push({
       name: USER_CREATED_EVENT,
