@@ -8,6 +8,7 @@ import { HttpStatus } from '@nestjs/common';
 import { OrganizationNotFoundError } from '../errors/organization-not-found.error';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
 import { GenerateQuizCommandHandler } from '../handlers/commands/generate-quiz-command.handler';
+import { GenerateQuizDTO } from '../dtos/generate-quiz.dto';
 
 describe('QuizController', () => {
   let controller: QuizController;
@@ -106,6 +107,23 @@ describe('QuizController', () => {
     const dto = new CreateQuizDTO();
     await controller.create(dto, res);
     expect(createQuizCommandHandler.handle).toHaveBeenCalledWith(dto);
+    expect(res.status).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
+    expect(res.send).toHaveBeenCalled();
+  });
+
+  it('should generate a quiz', async () => {
+    const res = {
+      send: jest.fn().mockReturnThis(),
+      status: jest.fn().mockReturnThis(),
+    } as unknown as Response;
+    const dto: GenerateQuizDTO = {
+      organizationId: randomUUID(),
+      userId: randomUUID(),
+      textInput: 'text',
+    };
+
+    controller.generate(dto, res);
+    expect(generateQuizCommandHandler.handle).toHaveBeenCalledWith(dto);
     expect(res.status).toHaveBeenCalledWith(HttpStatus.ACCEPTED);
     expect(res.send).toHaveBeenCalled();
   });
