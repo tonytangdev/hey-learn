@@ -74,4 +74,17 @@ describe('GenerateQuizCommandHandler', () => {
       organizationId: dto.organizationId,
     });
   });
+
+  it('should not throw an error if quiz generation fails', async () => {
+    const dto: GenerateQuizDTO = {
+      textInput: 'test',
+      userId: randomUUID(),
+      organizationId: randomUUID(),
+    };
+    (llmService.generateQuiz as jest.Mock).mockRejectedValueOnce(
+      new Error('test error'),
+    );
+    await handler.handle(dto);
+    expect(quizService.createQuiz).not.toHaveBeenCalled();
+  });
 });
