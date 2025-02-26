@@ -11,11 +11,8 @@ export class AuthGard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const req = context.switchToHttp().getRequest();
     const key = req.headers['x-api-key'];
-    console.log({ header: req.headers });
 
     const validAPIKey = this.configService.get('VALID_API_KEY');
-    console.log('validAPIKey', validAPIKey);
-    console.log('key', key);
     if (key !== validAPIKey) {
       return false;
     }
