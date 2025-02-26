@@ -4,8 +4,7 @@ import { GenerateQuizCommandHandler } from './generate-quiz-command.handler';
 import { QuizService } from '../../services/quiz.service';
 import { GenerateQuizDTO } from '../../dtos/generate-quiz.dto';
 import { randomUUID } from 'node:crypto';
-import { CreateQuizDTO } from '../../dtos/create-quiz.dto';
-import { faker } from '@faker-js/faker/.';
+import { faker } from '@faker-js/faker';
 
 describe('GenerateQuizCommandHandler', () => {
   let handler: GenerateQuizCommandHandler;

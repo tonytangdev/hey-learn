@@ -111,7 +111,7 @@ describe('QuizController', () => {
     expect(res.send).toHaveBeenCalled();
   });
 
-  it('should generate a quiz', async () => {
+  it('should generate a quiz', () => {
     const res = {
       send: jest.fn().mockReturnThis(),
       status: jest.fn().mockReturnThis(),
