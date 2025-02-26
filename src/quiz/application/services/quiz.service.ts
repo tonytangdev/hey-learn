@@ -12,7 +12,6 @@ import { Question } from '../../domain/entities/question.entity';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
 import { Membership } from '../../../user/domain/entities/membership.entity';
 import { OrganizationMembershipService } from '../../../user/application/services/organization-membership.service';
-import { GenerateQuizDTO } from '../dtos/generate-quiz.dto';
 
 @Injectable()
 export class QuizService {
@@ -95,5 +94,22 @@ export class QuizService {
 
       await questionRepository.save(question);
     });
+  }
+
+  async getRandomQuiz(userId: string) {
+    const membership =
+      await this.organizationMembershipService.findDefaultOrganizationByUserId(
+        userId,
+      );
+
+    if (!membership) {
+      throw new UserNotMemberOfOrganizationError();
+    }
+
+    const questions = await this.questionRepository.findRandomQuestions({
+      organizationId: membership.organization.id,
+    });
+
+    return questions;
   }
 }

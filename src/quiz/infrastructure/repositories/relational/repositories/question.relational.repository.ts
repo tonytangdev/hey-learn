@@ -29,4 +29,29 @@ export class QuestionRelationalRepository implements QuestionRepository {
 
     return QuestionMapper.toDomain(savedQuestion);
   }
+
+  async findRandomQuestions({
+    organizationId,
+  }: {
+    organizationId: string;
+  }): Promise<Question[]> {
+    // 1) Sub-query: select 10 random question IDs
+    const subQuery = this.repository
+      .createQueryBuilder('q')
+      .select('q.id')
+      .where('q.organizationId = :organizationId', { organizationId })
+      .orderBy('RANDOM()')
+      .limit(10);
+
+    // 2) Main query: fetch full rows + relations
+    const questions = await this.repository
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.propositions', 'propositions')
+      .leftJoinAndSelect('question.organization', 'organization')
+      .where(`question.id IN (${subQuery.getQuery()})`)
+      .setParameters(subQuery.getParameters()) // pass :organizationId, etc.
+      .getMany();
+
+    return questions.map((question) => QuestionMapper.toDomain(question));
+  }
 }

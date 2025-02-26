@@ -14,12 +14,14 @@ import { LLM } from './application/llm/llm';
 import { LLMService } from './application/services/llm.service';
 import { GenerateQuizCommandHandler } from './application/handlers/commands/generate-quiz-command.handler';
 import { OpenAiLLM } from './infrastructure/llm/open-ai.llm';
+import { GetRandomQuizQueryHandler } from './application/handlers/queries/get-random-quiz-query.handler';
 
 @Module({
   controllers: [QuizController],
   providers: [
     CreateQuizCommandHandler,
     GenerateQuizCommandHandler,
+    GetRandomQuizQueryHandler,
     QuizService,
     LLMService,
     {
