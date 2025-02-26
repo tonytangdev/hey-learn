@@ -13,4 +13,10 @@ export class OrganizationMembershipService {
       userId,
     );
   }
+
+  async findDefaultOrganizationByUserId(userId: string) {
+    return await this.organizationMembershipRepository.findDefaultOrganizationByUserId(
+      userId,
+    );
+  }
 }

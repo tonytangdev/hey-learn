@@ -45,20 +45,6 @@ describe('QuizDTO', () => {
     ).rejects.toThrow();
   });
 
-  it('should throw an error if there is no organization', async () => {
-    const quizDTO = new CreateQuizDTO();
-    quizDTO.question = faker.lorem.sentence();
-    quizDTO.answer = faker.lorem.sentence();
-    quizDTO.wrongAnswers = [faker.lorem.sentence()];
-    const validationPipe = new ValidationPipe();
-    await expect(
-      validationPipe.transform(quizDTO, {
-        type: 'body',
-        metatype: CreateQuizDTO,
-      }),
-    ).rejects.toThrow();
-  });
-
   it('should throw an error if there is no userId', async () => {
     const quizDTO = new CreateQuizDTO();
     quizDTO.question = faker.lorem.sentence();

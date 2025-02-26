@@ -5,6 +5,7 @@ import { OrganizationMembershipMapper } from '../mappers/organization-membership
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrganizationMembershipRelationalEntity } from '../entities/organization-membership.relational-entity';
 import { Repository } from 'typeorm';
+import { ORGANIZATION_TYPES } from 'src/user/domain/value-objects/organization-type.value-object';
 
 @Injectable()
 export class OrganizationMembershipRelationalRepository
@@ -32,6 +33,23 @@ export class OrganizationMembershipRelationalRepository
         where: { organization: { id: organizationId }, user: { id: userId } },
       });
 
+    return membershipEntity
+      ? Promise.resolve(OrganizationMembershipMapper.toDomain(membershipEntity))
+      : Promise.resolve(null);
+  }
+
+  async findDefaultOrganizationByUserId(
+    userId: Membership['user']['id'],
+  ): Promise<Membership | null> {
+    const membershipEntity =
+      await this.organizationMembershipRepository.findOne({
+        where: {
+          user: { id: userId },
+          organization: {
+            type: ORGANIZATION_TYPES.SINGLE,
+          },
+        },
+      });
     return membershipEntity
       ? Promise.resolve(OrganizationMembershipMapper.toDomain(membershipEntity))
       : Promise.resolve(null);

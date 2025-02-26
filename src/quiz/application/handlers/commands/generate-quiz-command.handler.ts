@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { QuizService } from '../../services/quiz.service';
 import { GenerateQuizDTO } from '../../dtos/generate-quiz.dto';
 import { LLMService } from '../../services/llm.service';
+import { OrganizationMembershipService } from 'src/user/application/services/organization-membership.service';
+import { UserHasNoDefaultOrganization } from '../../errors/user-has-no-default-organization';
 
 @Injectable()
 export class GenerateQuizCommandHandler {
@@ -10,10 +12,24 @@ export class GenerateQuizCommandHandler {
   constructor(
     private readonly quizService: QuizService,
     private readonly llmService: LLMService,
+    private readonly organizationMembershipService: OrganizationMembershipService,
   ) {}
 
   async handle(dto: GenerateQuizDTO): Promise<void> {
     try {
+      if (!dto.organizationId) {
+        const organizationMembership =
+          await this.organizationMembershipService.findDefaultOrganizationByUserId(
+            dto.userId,
+          );
+
+        if (!organizationMembership) {
+          throw new UserHasNoDefaultOrganization(dto.userId);
+        }
+
+        dto.organizationId = organizationMembership.organization.id;
+      }
+
       const quizzesToCreate = await this.llmService.generateQuiz(dto.textInput);
       for (const quizToCreate of quizzesToCreate) {
         await this.quizService.createQuiz({
