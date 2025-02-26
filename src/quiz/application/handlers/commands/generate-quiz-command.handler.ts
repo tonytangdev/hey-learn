@@ -16,7 +16,6 @@ export class GenerateQuizCommandHandler {
     try {
       const quizzesToCreate = await this.llmService.generateQuiz(dto.textInput);
       for (const quizToCreate of quizzesToCreate) {
-        console.log(quizToCreate);
         await this.quizService.createQuiz({
           ...quizToCreate,
           userId: dto.userId,
