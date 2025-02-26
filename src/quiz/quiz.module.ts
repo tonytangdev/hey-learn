@@ -15,6 +15,10 @@ import { LLMService } from './application/services/llm.service';
 import { GenerateQuizCommandHandler } from './application/handlers/commands/generate-quiz-command.handler';
 import { OpenAiLLM } from './infrastructure/llm/open-ai.llm';
 import { GetRandomQuizQueryHandler } from './application/handlers/queries/get-random-quiz-query.handler';
+import { UserAnswerRepository } from './application/repositories/user-answer.repository';
+import { UserAnswerRelationalRepository } from './infrastructure/repositories/relational/repositories/user-answer.relational.repository';
+import { UserAnswerRelationalEntity } from './infrastructure/repositories/relational/entities/user-answer.relational-entity';
+import { AnswerQuestionCommandHandler } from './application/handlers/commands/answer-question-command.handler';
 
 @Module({
   controllers: [QuizController],
@@ -22,11 +26,16 @@ import { GetRandomQuizQueryHandler } from './application/handlers/queries/get-ra
     CreateQuizCommandHandler,
     GenerateQuizCommandHandler,
     GetRandomQuizQueryHandler,
+    AnswerQuestionCommandHandler,
     QuizService,
     LLMService,
     {
       provide: QuestionRepository,
       useClass: QuestionRelationalRepository,
+    },
+    {
+      provide: UserAnswerRepository,
+      useClass: UserAnswerRelationalRepository,
     },
     {
       provide: TRANSACTION_MANAGER,
@@ -41,6 +50,7 @@ import { GetRandomQuizQueryHandler } from './application/handlers/queries/get-ra
     TypeOrmModule.forFeature([
       QuestionRelationalEntity,
       AnswerRelationalEntity,
+      UserAnswerRelationalEntity,
     ]),
     UserModule,
   ],

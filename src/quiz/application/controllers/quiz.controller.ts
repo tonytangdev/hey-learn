@@ -16,6 +16,8 @@ import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-o
 import { GenerateQuizDTO } from '../dtos/generate-quiz.dto';
 import { GenerateQuizCommandHandler } from '../handlers/commands/generate-quiz-command.handler';
 import { GetRandomQuizQueryHandler } from '../handlers/queries/get-random-quiz-query.handler';
+import { AnswerQuizDTO } from '../dtos/answer-quiz.dto';
+import { AnswerQuestionCommandHandler } from '../handlers/commands/answer-question-command.handler';
 
 @Controller('quiz')
 export class QuizController {
@@ -25,6 +27,7 @@ export class QuizController {
     private readonly createQuizCommandHandler: CreateQuizCommandHandler,
     private readonly generateQuizCommandHandler: GenerateQuizCommandHandler,
     private readonly getRandomQuizQueryHandler: GetRandomQuizQueryHandler,
+    private readonly answerQuestionCommandHandler: AnswerQuestionCommandHandler,
   ) {}
 
   @Post()
@@ -51,13 +54,33 @@ export class QuizController {
 
   @Post('generate')
   async generate(@Body() dto: GenerateQuizDTO, @Res() res: Response) {
-    await this.generateQuizCommandHandler.handle(dto);
-    res.status(HttpStatus.CREATED).send();
+    try {
+      await this.generateQuizCommandHandler.handle(dto);
+      res.status(HttpStatus.CREATED).send();
+    } catch (e) {
+      this.logger.error(e);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .send({ message: 'Internal Server Error' });
+    }
   }
 
   @Get()
   async getRandomQuiz(@Query('userId') userId: string, @Res() res: Response) {
     const quiz = await this.getRandomQuizQueryHandler.handle(userId);
     res.status(HttpStatus.OK).send(quiz);
+  }
+
+  @Post('answer')
+  async answerQuestion(@Body() dto: AnswerQuizDTO, @Res() res: Response) {
+    try {
+      await this.answerQuestionCommandHandler.handle(dto);
+      res.status(HttpStatus.OK).send();
+    } catch (e) {
+      this.logger.error(e);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .send({ message: 'Internal Server Error' });
+    }
   }
 }

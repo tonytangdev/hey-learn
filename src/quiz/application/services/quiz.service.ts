@@ -12,6 +12,9 @@ import { Question } from '../../domain/entities/question.entity';
 import { UserNotMemberOfOrganizationError } from '../errors/user-not-member-of-organization.error';
 import { Membership } from '../../../user/domain/entities/membership.entity';
 import { OrganizationMembershipService } from '../../../user/application/services/organization-membership.service';
+import { AnswerQuizDTO } from '../dtos/answer-quiz.dto';
+import { UserAnswer } from '../../domain/entities/user-answer.entity';
+import { UserAnswerRepository } from '../repositories/user-answer.repository';
 
 @Injectable()
 export class QuizService {
@@ -21,6 +24,8 @@ export class QuizService {
     private readonly questionRepository: QuestionRepository,
 
     private readonly organizationMembershipService: OrganizationMembershipService,
+
+    private readonly userAnswerRepository: UserAnswerRepository,
 
     @Inject(TRANSACTION_MANAGER)
     private readonly transactionManager: TransactionManager,
@@ -111,5 +116,11 @@ export class QuizService {
     });
 
     return questions;
+  }
+
+  async answerQuestion(dto: AnswerQuizDTO) {
+    const userAnswer = new UserAnswer(dto.userId, dto.answerId);
+
+    await this.userAnswerRepository.save(userAnswer);
   }
 }

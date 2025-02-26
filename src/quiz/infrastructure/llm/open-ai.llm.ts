@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateQuizDTO } from 'src/quiz/application/dtos/create-quiz.dto';
-import { LLM } from 'src/quiz/application/llm/llm';
+import { CreateQuizDTO } from '../../../quiz/application/dtos/create-quiz.dto';
+import { LLM } from '../../../quiz/application/llm/llm';
 import OpenAI from 'openai';
 import { zodResponseFormat } from 'openai/helpers/zod';
 import { z } from 'zod';

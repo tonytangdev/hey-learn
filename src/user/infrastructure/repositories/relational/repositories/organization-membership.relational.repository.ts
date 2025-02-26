@@ -5,7 +5,7 @@ import { OrganizationMembershipMapper } from '../mappers/organization-membership
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrganizationMembershipRelationalEntity } from '../entities/organization-membership.relational-entity';
 import { Repository } from 'typeorm';
-import { ORGANIZATION_TYPES } from 'src/user/domain/value-objects/organization-type.value-object';
+import { ORGANIZATION_TYPES } from '../../../../../user/domain/value-objects/organization-type.value-object';
 
 @Injectable()
 export class OrganizationMembershipRelationalRepository

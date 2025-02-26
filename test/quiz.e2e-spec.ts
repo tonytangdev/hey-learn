@@ -2,7 +2,7 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { initApp } from './init-app';
-import { CreateQuizDTO } from 'src/quiz/application/dtos/create-quiz.dto';
+import { CreateQuizDTO } from '../src/quiz/application/dtos/create-quiz.dto';
 
 describe.skip('QuizController (e2e)', () => {
   let app: INestApplication<App>;

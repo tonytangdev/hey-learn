@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { QuizService } from '../../services/quiz.service';
 import { GenerateQuizDTO } from '../../dtos/generate-quiz.dto';
 import { LLMService } from '../../services/llm.service';
-import { OrganizationMembershipService } from 'src/user/application/services/organization-membership.service';
+import { OrganizationMembershipService } from '../../../../user/application/services/organization-membership.service';
 import { UserHasNoDefaultOrganization } from '../../errors/user-has-no-default-organization';
 
 @Injectable()
