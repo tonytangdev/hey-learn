@@ -11,9 +11,9 @@ import { TRANSACTION_MANAGER } from '../shared/interfaces/transaction-manager';
 import { TransactionManagerTypeORM } from './infrastructure/transaction-managers/transaction-manager.typeorm';
 import { UserModule } from '../user/user.module';
 import { LLM } from './application/llm/llm';
-import { LocalLLM } from './infrastructure/llm/local.llm';
 import { LLMService } from './application/services/llm.service';
 import { GenerateQuizCommandHandler } from './application/handlers/commands/generate-quiz-command.handler';
+import { OpenAiLLM } from './infrastructure/llm/open-ai.llm';
 
 @Module({
   controllers: [QuizController],
@@ -32,7 +32,7 @@ import { GenerateQuizCommandHandler } from './application/handlers/commands/gene
     },
     {
       provide: LLM,
-      useClass: LocalLLM,
+      useClass: OpenAiLLM,
     },
   ],
   imports: [
