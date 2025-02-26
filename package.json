@@ -78,7 +78,8 @@
       "\\.module\\.ts",
       "<rootDir>/main.ts",
       "\\.mock\\.ts",
-      "\\.relational-entity.ts"
+      "\\.relational-entity.ts",
+      "src/quiz/infrastructure/llm/local.llm.ts"
     ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
