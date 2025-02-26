@@ -31,13 +31,15 @@ export class GenerateQuizCommandHandler {
       }
 
       const quizzesToCreate = await this.llmService.generateQuiz(dto.textInput);
-      for (const quizToCreate of quizzesToCreate) {
-        await this.quizService.createQuiz({
-          ...quizToCreate,
-          userId: dto.userId,
-          organizationId: dto.organizationId,
-        });
-      }
+      await Promise.all(
+        quizzesToCreate.map(async (quizToCreate) => {
+          await this.quizService.createQuiz({
+            ...quizToCreate,
+            userId: dto.userId,
+            organizationId: dto.organizationId!,
+          });
+        }),
+      );
     } catch (error) {
       this.logger.error(error);
     }
