@@ -15,6 +15,10 @@ import { OrganizationMembershipService } from '../../../user/application/service
 import { AnswerQuizDTO } from '../dtos/answer-quiz.dto';
 import { UserAnswer } from '../../domain/entities/user-answer.entity';
 import { UserAnswerRepository } from '../repositories/user-answer.repository';
+import { QuestionGeneration } from '../../domain/entities/question-generation.entity';
+import { QuestionGenerationRepository } from '../repositories/question-generation.repository';
+import { GenerateQuizDTO } from '../dtos/generate-quiz.dto';
+import { Transaction } from '../../../shared/interfaces/transaction';
 
 @Injectable()
 export class QuizService {
@@ -27,13 +31,53 @@ export class QuizService {
 
     private readonly userAnswerRepository: UserAnswerRepository,
 
+    private readonly questionGenerationRepository: QuestionGenerationRepository,
+
     @Inject(TRANSACTION_MANAGER)
     private readonly transactionManager: TransactionManager,
   ) {}
 
-  async createQuiz(dto: CreateQuizDTO) {
-    const { question, answer, wrongAnswers, category, organizationId, userId } =
-      dto;
+  async createQuestions(
+    questions: Pick<CreateQuizDTO, 'question' | 'answer' | 'wrongAnswers'>[],
+    dto: GenerateQuizDTO,
+  ) {
+    await this.transactionManager.execute(async (transaction) => {
+      const questionGenerationRepository = transaction.getRepository(
+        this.questionGenerationRepository,
+      );
+
+      const questionGeneration = new QuestionGeneration();
+      await questionGenerationRepository.save(questionGeneration);
+
+      await Promise.all(
+        questions.map(async (question) => {
+          const { question: text, answer, wrongAnswers } = question;
+
+          const createQuizDTO: CreateQuizDTO = {
+            question: text,
+            answer,
+            wrongAnswers,
+            organizationId: dto.organizationId!,
+            userId: dto.userId,
+            questionGeneration,
+          };
+
+          await this.createQuiz(createQuizDTO, transaction);
+        }),
+      );
+    });
+  }
+
+  async createQuiz(dto: CreateQuizDTO, transaction?: Transaction) {
+    const {
+      question,
+      answer,
+      wrongAnswers,
+      category,
+      organizationId,
+      userId,
+      questionGeneration,
+    } = dto;
 
     if (await this.userIsNotMemberOfOrganization(organizationId, userId)) {
       throw new UserNotMemberOfOrganizationError();
@@ -44,11 +88,12 @@ export class QuizService {
       answer,
       wrongAnswers,
       organizationId,
+      questionGeneration,
       category,
     );
 
     try {
-      await this.saveDataInDatabase(quizQuestion);
+      await this.saveDataInDatabase(quizQuestion, transaction);
     } catch (error) {
       this.logger.error(error);
       this.logger.error({ dto });
@@ -74,6 +119,7 @@ export class QuizService {
     answer: string,
     wrongAnswers: string[],
     organizationId: Organization['id'],
+    questionGeneration: QuestionGeneration,
     category?: string,
   ) {
     const questionAgg = QuestionAggregate.create(
@@ -81,6 +127,7 @@ export class QuizService {
       answer,
       wrongAnswers,
       organizationId,
+      questionGeneration,
       category,
     );
 
@@ -91,14 +138,20 @@ export class QuizService {
     };
   }
 
-  private async saveDataInDatabase(question: Question) {
-    await this.transactionManager.execute(async (transaction) => {
+  private async saveDataInDatabase(
+    question: Question,
+    transaction?: Transaction,
+  ) {
+    if (transaction) {
       const questionRepository = transaction.getRepository(
         this.questionRepository,
       );
 
       await questionRepository.save(question);
-    });
+      return;
+    } else {
+      await this.questionRepository.save(question);
+    }
   }
 
   async getRandomQuiz(userId: string) {

@@ -1,6 +1,7 @@
 import { Question } from '../entities/question.entity';
 import { QuestionEntityBuilder } from '../entities-builders/question.entity-builder';
 import { Organization } from '../entities/organization.entity';
+import { QuestionGeneration } from '../entities/question-generation.entity';
 
 export class QuestionAggregate {
   constructor(private readonly question: Question) {}
@@ -10,12 +11,14 @@ export class QuestionAggregate {
     answer: string,
     wrongAnswers: string[],
     organizationId: Organization['id'],
+    questionGeneration: QuestionGeneration,
     category?: string,
   ) {
     const questionBuilder = new QuestionEntityBuilder()
       .withValue(questionText)
       .withAnswer(answer)
-      .withOrganizationId(organizationId);
+      .withOrganizationId(organizationId)
+      .withQuestionGeneration(questionGeneration);
 
     if (category) {
       questionBuilder.withCategory(category);

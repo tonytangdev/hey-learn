@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { QuestionGeneration } from '../../domain/entities/question-generation.entity';
 
 export class CreateQuizDTO {
   @IsString()
@@ -32,4 +33,6 @@ export class CreateQuizDTO {
   @IsString()
   @IsNotEmpty()
   userId: string;
+
+  questionGeneration: QuestionGeneration;
 }

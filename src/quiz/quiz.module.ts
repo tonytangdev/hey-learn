@@ -19,6 +19,9 @@ import { UserAnswerRepository } from './application/repositories/user-answer.rep
 import { UserAnswerRelationalRepository } from './infrastructure/repositories/relational/repositories/user-answer.relational.repository';
 import { UserAnswerRelationalEntity } from './infrastructure/repositories/relational/entities/user-answer.relational-entity';
 import { AnswerQuestionCommandHandler } from './application/handlers/commands/answer-question-command.handler';
+import { QuestionGenerationRelationalEntity } from './infrastructure/repositories/relational/entities/question-generation.relational-entity';
+import { QuestionGenerationRepository } from './application/repositories/question-generation.repository';
+import { QuestionGenerationRelationalRepository } from './infrastructure/repositories/relational/repositories/question-generation.relational.repository';
 
 @Module({
   controllers: [QuizController],
@@ -38,6 +41,10 @@ import { AnswerQuestionCommandHandler } from './application/handlers/commands/an
       useClass: UserAnswerRelationalRepository,
     },
     {
+      provide: QuestionGenerationRepository,
+      useClass: QuestionGenerationRelationalRepository,
+    },
+    {
       provide: TRANSACTION_MANAGER,
       useClass: TransactionManagerTypeORM,
     },
@@ -51,6 +58,7 @@ import { AnswerQuestionCommandHandler } from './application/handlers/commands/an
       QuestionRelationalEntity,
       AnswerRelationalEntity,
       UserAnswerRelationalEntity,
+      QuestionGenerationRelationalEntity,
     ]),
     UserModule,
   ],

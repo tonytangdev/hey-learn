@@ -3,6 +3,7 @@ import { QuestionRelationalEntity } from '../entities/question.relational-entity
 import { Answer } from '../../../../domain/entities/answer.entity';
 import { Organization } from '../../../../domain/entities/organization.entity';
 import { AnswerRelationalEntity } from '../entities/answer.relational-entity';
+import { QuestionGeneration } from 'src/quiz/domain/entities/question-generation.entity';
 
 export class QuestionMapper {
   static toDomain(
@@ -22,6 +23,12 @@ export class QuestionMapper {
             propositionRelationalEntity.deletedAt ?? undefined,
           ),
       ),
+      new QuestionGeneration(
+        questionRelationalEntity.questionGenerationId,
+        questionRelationalEntity.questionGeneration?.createdAt,
+        questionRelationalEntity.questionGeneration?.updatedAt,
+        questionRelationalEntity.questionGeneration?.deletedAt ?? undefined,
+      ),
       questionRelationalEntity.category ?? undefined,
       questionRelationalEntity.id,
       questionRelationalEntity.createdAt,
@@ -38,6 +45,8 @@ export class QuestionMapper {
     relational.updatedAt = question.updatedAt;
     relational.deletedAt = question.deletedAt ?? null;
     relational.organizationId = question.organization.id;
+    relational.category = question.category ?? null;
+    relational.questionGenerationId = question.questionGeneration.id;
 
     const propositionsRelational = question.propositions.map((proposition) => {
       const propositionRelational = new AnswerRelationalEntity();

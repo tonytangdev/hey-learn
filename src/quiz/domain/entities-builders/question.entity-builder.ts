@@ -1,5 +1,6 @@
 import { Answer } from '../entities/answer.entity';
 import { Organization } from '../entities/organization.entity';
+import { QuestionGeneration } from '../entities/question-generation.entity';
 import { Question } from '../entities/question.entity';
 
 export class QuestionEntityBuilder {
@@ -12,6 +13,7 @@ export class QuestionEntityBuilder {
   private answer: string;
   private wrongAnswers: string[] = [];
   private category?: string;
+  private questionGeneration: QuestionGeneration;
 
   withId(id: string) {
     this.id = id;
@@ -58,6 +60,11 @@ export class QuestionEntityBuilder {
     return this;
   }
 
+  withQuestionGeneration(questionGeneration: QuestionGeneration) {
+    this.questionGeneration = questionGeneration;
+    return this;
+  }
+
   build() {
     const organization = new Organization(this.organizationId);
     const answer = new Answer(this.answer, undefined, true);
@@ -65,16 +72,20 @@ export class QuestionEntityBuilder {
       this.wrongAnswers.map((wrongAnswer) => new Answer(wrongAnswer)),
     );
 
+    // First create the Question instance without the QuestionGeneration
     const question = new Question(
       this.value,
       organization,
       propositions,
+      this.questionGeneration,
       this.category,
       this.id,
       this.createdAt,
       this.updatedAt,
       this.deletedAt,
     );
+
+    this.questionGeneration.setQuestion(question);
     return question;
   }
 }

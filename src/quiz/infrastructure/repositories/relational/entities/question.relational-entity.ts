@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { AnswerRelationalEntity } from './answer.relational-entity';
 import { OrganizationRelationalEntity } from '../../../../../user/infrastructure/repositories/relational/entities/organization.relational-entity';
+import { QuestionGenerationRelationalEntity } from './question-generation.relational-entity';
 
 @Entity({ name: 'question' })
 export class QuestionRelationalEntity {
@@ -47,4 +48,11 @@ export class QuestionRelationalEntity {
 
   @Column({ type: 'timestamp', nullable: true, name: 'deleted_at' })
   deletedAt: Date | null;
+
+  @ManyToOne(() => QuestionGenerationRelationalEntity, (qg) => qg.id)
+  @JoinColumn({ name: 'question_generation_id' })
+  questionGeneration: QuestionGenerationRelationalEntity;
+
+  @Column({ name: 'question_generation_id' })
+  questionGenerationId: string;
 }

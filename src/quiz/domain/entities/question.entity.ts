@@ -3,6 +3,7 @@ import { Answer } from './answer.entity';
 import { Organization } from './organization.entity';
 import { MissingQuestionPropositionsError } from '../errors/missing-question-propositions.error';
 import { MissingQuestionValueError } from '../errors/missing-question-value.error';
+import { QuestionGeneration } from './question-generation.entity';
 
 const PREFIX = 'question_';
 
@@ -13,6 +14,7 @@ export class Question {
     value: string,
     public readonly organization: Organization,
     public readonly propositions: Answer[],
+    public readonly questionGeneration: QuestionGeneration,
     public readonly category?: string,
     public readonly id: string = PREFIX + randomUUID(),
     public readonly createdAt: Date = new Date(),
