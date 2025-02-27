@@ -111,11 +111,29 @@ export class QuizService {
       throw new UserNotMemberOfOrganizationError();
     }
 
-    const questions = await this.questionRepository.findRandomQuestions({
-      organizationId: membership.organization.id,
-    });
+    const quizQuestions = await this.getQuestionsToReturn(userId);
 
-    return questions;
+    const questionsFromDatabase =
+      await this.questionRepository.findByIds(quizQuestions);
+
+    return questionsFromDatabase;
+  }
+
+  private async getQuestionsToReturn(userId: string) {
+    const questionsSortedByLeastAnswered =
+      await this.questionRepository.findByUserIdSortedByLeastAnswered({
+        userId,
+      });
+
+    // get the last 20 questions
+    const questions = questionsSortedByLeastAnswered.slice(0, 20);
+
+    // shuffle the questions
+    const shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+
+    // get the first 10 questions
+    const quizQuestions = shuffledQuestions.slice(0, 10);
+    return quizQuestions;
   }
 
   async answerQuestion(dto: AnswerQuizDTO) {

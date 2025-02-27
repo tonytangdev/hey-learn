@@ -4,7 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -15,13 +15,19 @@ export class UserAnswerRelationalEntity {
   @PrimaryColumn()
   id: string;
 
-  @OneToOne(() => UserRelationalEntity)
+  @ManyToOne(() => UserRelationalEntity)
   @JoinColumn({ name: 'user_id' })
   user: UserRelationalEntity;
 
-  @OneToOne(() => AnswerRelationalEntity)
+  @Column({ name: 'user_id' })
+  userId: string;
+
+  @ManyToOne(() => AnswerRelationalEntity)
   @JoinColumn({ name: 'answer_id' })
   answer: AnswerRelationalEntity;
+
+  @Column({ name: 'answer_id' })
+  answerId: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
