@@ -41,12 +41,12 @@ export class QuizService {
     questions: Pick<CreateQuizDTO, 'question' | 'answer' | 'wrongAnswers'>[],
     dto: GenerateQuizDTO,
   ) {
+    const questionGeneration = new QuestionGeneration();
     await this.transactionManager.execute(async (transaction) => {
       const questionGenerationRepository = transaction.getRepository(
         this.questionGenerationRepository,
       );
 
-      const questionGeneration = new QuestionGeneration();
       await questionGenerationRepository.save(questionGeneration);
 
       await Promise.all(
@@ -66,6 +66,8 @@ export class QuizService {
         }),
       );
     });
+
+    return questionGeneration;
   }
 
   async createQuiz(dto: CreateQuizDTO, transaction?: Transaction) {

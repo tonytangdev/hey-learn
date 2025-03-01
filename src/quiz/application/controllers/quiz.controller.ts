@@ -55,8 +55,9 @@ export class QuizController {
   @Post('generate')
   async generate(@Body() dto: GenerateQuizDTO, @Res() res: Response) {
     try {
-      await this.generateQuizCommandHandler.handle(dto);
-      res.status(HttpStatus.CREATED).send();
+      const questionGeneration =
+        await this.generateQuizCommandHandler.handle(dto);
+      res.status(HttpStatus.CREATED).send({ id: questionGeneration?.id });
     } catch (e) {
       this.logger.error(e);
       res

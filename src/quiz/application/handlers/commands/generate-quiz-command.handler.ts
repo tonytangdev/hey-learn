@@ -4,6 +4,7 @@ import { GenerateQuizDTO } from '../../dtos/generate-quiz.dto';
 import { LLMService } from '../../services/llm.service';
 import { OrganizationMembershipService } from '../../../../user/application/services/organization-membership.service';
 import { UserHasNoDefaultOrganization } from '../../errors/user-has-no-default-organization';
+import { QuestionGeneration } from '../../../../quiz/domain/entities/question-generation.entity';
 
 @Injectable()
 export class GenerateQuizCommandHandler {
@@ -15,7 +16,7 @@ export class GenerateQuizCommandHandler {
     private readonly organizationMembershipService: OrganizationMembershipService,
   ) {}
 
-  async handle(dto: GenerateQuizDTO): Promise<void> {
+  async handle(dto: GenerateQuizDTO): Promise<QuestionGeneration | undefined> {
     try {
       if (!dto.organizationId) {
         const organizationMembership =
@@ -31,7 +32,12 @@ export class GenerateQuizCommandHandler {
       }
 
       const quizzesToCreate = await this.llmService.generateQuiz(dto.textInput);
-      await this.quizService.createQuestions(quizzesToCreate, dto);
+      const questionGeneration = await this.quizService.createQuestions(
+        quizzesToCreate,
+        dto,
+      );
+
+      return questionGeneration;
     } catch (error) {
       this.logger.error(error);
     }
